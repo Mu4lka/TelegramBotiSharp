@@ -2,7 +2,7 @@
 {
     public class State: IState
     {
-        static public IStorage Storage = new MemoryStorage();
+        public static IStorage Storage = new MemoryStorage();
 
         private readonly long _id;
 

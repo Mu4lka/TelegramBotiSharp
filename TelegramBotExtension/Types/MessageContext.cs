@@ -1,9 +1,4 @@
-﻿using System;
-using System.Collections.Generic;
-using System.Linq;
-using System.Text;
-using System.Threading.Tasks;
-using Telegram.Bot.Types;
+﻿using Telegram.Bot.Types;
 using Telegram.Bot;
 
 namespace TelegramBotExtension.Types
@@ -16,7 +11,7 @@ namespace TelegramBotExtension.Types
             ITelegramBotClient bot,
             CancellationToken cancellationToken,
             Message message
-            ) : base(bot, cancellationToken, message.From.Id)
+            ) : base(bot, cancellationToken, message.From!.Id, message.Text!)
         {
             Message = message;
         }

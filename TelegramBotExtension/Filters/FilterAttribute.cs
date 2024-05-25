@@ -7,12 +7,14 @@ namespace TelegramBotExtension.Filters
     {
         public string? Data;
 
+        public FilterAttribute() { }
+
         public FilterAttribute(string? data)
         {
             Data = data;
         }
 
-        public abstract bool Call(Context context);
+        public abstract Task<bool> Call(Context context);
 
     }
 

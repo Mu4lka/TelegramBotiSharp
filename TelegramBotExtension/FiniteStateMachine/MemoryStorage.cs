@@ -2,8 +2,8 @@
 {
     public class MemoryStorage : IStorage
     {
-        static public Dictionary<long, string> States = [];
-        static public Dictionary<long, Dictionary<string, object>> Data = [];
+        public static Dictionary<long, string> States = [];
+        public static Dictionary<long, Dictionary<string, object>> Data = [];
 
         public void SetState(long id, string state)
         {

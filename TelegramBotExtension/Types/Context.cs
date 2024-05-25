@@ -8,16 +8,19 @@ namespace TelegramBotExtension.Types
         public ITelegramBotClient Bot;
         public CancellationToken CancellationToken;
         public State State;
+        public string Data;
 
         public Context(
             ITelegramBotClient bot,
             CancellationToken cancellationToken,
-            long id
+            long id,
+            string data
             )
         {
             Bot = bot;
             CancellationToken = cancellationToken;
             State = new State(id);
+            Data = data;
         }
 
     }
