@@ -1,18 +1,16 @@
-﻿using System;
-using System.Collections.Generic;
-using System.Linq;
-using System.Text;
-using System.Threading.Tasks;
+﻿using TelegramBotExtension.Handling.Handlers;
 
 namespace TelegramBotExtension.Handling
 {
     public class Router
     {
-        public List<IHandler> Handlers;
+        public List<Handler> Handlers;
 
-        public Router(List<IHandler> handlers)
+        public Router(List<Handler> handlers)
         {
             Handlers = handlers;
         }
+
     }
+
 }

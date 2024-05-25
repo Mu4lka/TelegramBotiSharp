@@ -1,8 +1,4 @@
-﻿using System;
-using System.Collections.Generic;
-using System.Linq;
-using System.Text;
-using Telegram.Bot;
+﻿using Telegram.Bot;
 using Telegram.Bot.Types;
 using TelegramBotExtension.Filters;
 using TelegramBotExtension.Types;
@@ -24,5 +20,7 @@ namespace TelegramBotExtension.Examples
             await context.Bot.SendTextMessageAsync(user.Id, "CastomFilter");
             return true;
         }
+
     }
+
 }
