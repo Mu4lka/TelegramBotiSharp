@@ -2,6 +2,7 @@
 using Telegram.Bot.Types;
 using TelegramBotExtension.Filters;
 using TelegramBotExtension.Types;
+using TelegramBotExtension.Types.Base;
 
 namespace TelegramBotExtension.Examples
 {

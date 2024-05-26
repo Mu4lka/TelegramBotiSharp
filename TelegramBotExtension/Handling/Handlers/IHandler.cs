@@ -1,4 +1,4 @@
-﻿using TelegramBotExtension.Types;
+﻿using TelegramBotExtension.Types.Base;
 
 namespace TelegramBotExtension.Handling.Handlers
 {

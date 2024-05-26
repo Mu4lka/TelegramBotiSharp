@@ -1,6 +1,11 @@
 ﻿using Telegram.Bot;
 using Telegram.Bot.Polling;
 using Telegram.Bot.Types;
+using Telegram.Bot.Types.Enums;
+using TelegramBotExtension.Filters;
+using TelegramBotExtension.Handling.Handlers;
+using TelegramBotExtension.Types;
+using TelegramBotExtension.Types.Base;
 
 namespace TelegramBotExtension.Handling
 {
@@ -20,13 +25,76 @@ namespace TelegramBotExtension.Handling
 
         public async Task HandleUpdateAsync(ITelegramBotClient botClient, Update update, CancellationToken cancellationToken)
         {
-            await Handle(botClient, update, cancellationToken);
+            await Handle(new UpdateContext(botClient, update, cancellationToken));
         }
 
-        private Task Handle(ITelegramBotClient botClient, Update update, CancellationToken cancellationToken)
+        private async Task Handle(UpdateContext updateContext)
         {
-            //TO DO
-            throw new NotImplementedException();
+            foreach (var router in Routers)
+            {
+                var data = CreateHandlersAndContext(router, updateContext);
+
+                List<IHandler> handlers = data.Item1;
+                Context context = data.Item2;
+
+                foreach (var handler in handlers)
+                {
+                    if (await CheckFilters(handler, context))
+                    {
+                        await handler.Execute(context);
+                        return;
+                    }
+                }
+            }
+        }
+
+        private static async Task<bool> CheckFilters(IHandler handler, Context context)
+        {
+            var filters = handler.GetType().GetCustomAttributes(false);
+
+            if (filters.Length == 0)
+                return true;
+
+            foreach (FilterAttribute filter in filters)
+            {
+                if (await filter.Call(context))
+                    return true;
+            }
+            return false;
+        }
+
+        private (List<IHandler>, Context) CreateHandlersAndContext(Router router, UpdateContext updateContext)
+        {
+            var updateType = updateContext.Update.Type;
+
+            List<IHandler> handlers = new List<IHandler>();
+            Context? context = null;
+
+            if (updateType == UpdateType.Message)
+            {
+                handlers = router.Handlers.OfType<MessageHandler>().Cast<IHandler>().ToList();
+                context = new MessageContext(
+                    updateContext.Bot,
+                    updateContext.CancellationToken,
+                    updateContext.Update.Message!
+                    );
+            }
+            else if (updateType == UpdateType.CallbackQuery)
+            {
+                handlers = router.Handlers.OfType<CallbackQueryHandler>().Cast<IHandler>().ToList();
+                context = new CallbackQueryContext(
+                    updateContext.Bot,
+                    updateContext.CancellationToken,
+                    updateContext.Update.CallbackQuery!
+                    );
+            }
+
+            if (context == null)
+            {
+                throw new Exception("Context is null");
+            }
+
+            return (handlers, context);
         }
 
     }

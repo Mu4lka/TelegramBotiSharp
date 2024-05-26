@@ -1,5 +1,6 @@
 ﻿using Telegram.Bot.Types;
 using Telegram.Bot;
+using TelegramBotExtension.Types.Base;
 
 namespace TelegramBotExtension.Types
 {
