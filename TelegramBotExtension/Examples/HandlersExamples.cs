@@ -23,6 +23,7 @@ namespace TelegramBotExtension.Examples
         public static async Task Main()
         {
             var botClient = new TelegramBotClient(_token);
+            Router authorization = new Router();
             Dispatcher handler = new Dispatcher();
             await botClient.ReceiveAsync(handler);
         }

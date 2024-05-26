@@ -6,11 +6,11 @@ namespace TelegramBotExtension.Handling
 {
     public class Dispatcher : IUpdateHandler
     {
-        public List<Router> Routers;
+        public List<Router> Routers { get; set; }
 
-        public Dispatcher()
+        public Dispatcher(List<Router> routers)
         {
-            Routers = [];
+            Routers = routers;
         }
 
         public Task HandlePollingErrorAsync(ITelegramBotClient botClient, Exception exception, CancellationToken cancellationToken)
@@ -18,7 +18,12 @@ namespace TelegramBotExtension.Handling
             throw new NotImplementedException();
         }
 
-        public Task HandleUpdateAsync(ITelegramBotClient botClient, Update update, CancellationToken cancellationToken)
+        public async Task HandleUpdateAsync(ITelegramBotClient botClient, Update update, CancellationToken cancellationToken)
+        {
+            await Handle(botClient, update, cancellationToken);
+        }
+
+        private Task Handle(ITelegramBotClient botClient, Update update, CancellationToken cancellationToken)
         {
             throw new NotImplementedException();
         }

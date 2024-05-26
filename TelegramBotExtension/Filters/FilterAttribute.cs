@@ -5,7 +5,7 @@ namespace TelegramBotExtension.Filters
     [AttributeUsage(AttributeTargets.Class)]
     public abstract class FilterAttribute : Attribute
     {
-        public string? Data;
+        public string? Data { get; set; }
 
         public FilterAttribute() { }
 

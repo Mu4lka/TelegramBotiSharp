@@ -1,6 +1,6 @@
 ﻿namespace TelegramBotExtension.FiniteStateMachine
 {
-    public interface IState
+    internal interface IState
     {
         void SetState(string state);
 

@@ -5,13 +5,13 @@ namespace TelegramBotExtension.Types
 {
     public class CallbackQueryContext : Context
     {
-        public CallbackQuery CallbackQuery;
+        public CallbackQuery CallbackQuery { get; set; }
 
         public CallbackQueryContext(
             ITelegramBotClient bot,
             CancellationToken cancellationToken,
             CallbackQuery callbackQuery
-            ) : base(bot, cancellationToken, callbackQuery.From.Id, callbackQuery.Data!)
+            ) : base(bot, cancellationToken, callbackQuery.From.Id, callbackQuery.Data)
         {
             CallbackQuery = callbackQuery;
         }

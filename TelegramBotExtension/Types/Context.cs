@@ -5,10 +5,14 @@ namespace TelegramBotExtension.Types
 {
     public abstract class Context
     {
-        public ITelegramBotClient Bot;
-        public CancellationToken CancellationToken;
-        public State State;
-        public string Data;
+        public ITelegramBotClient Bot { get; set; }
+
+        public CancellationToken CancellationToken { get; set; }
+
+        public State State { get; set; }
+
+        public string Data { get; set; }
+
 
         public Context(
             ITelegramBotClient bot,

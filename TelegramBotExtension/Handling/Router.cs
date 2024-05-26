@@ -1,12 +1,13 @@
-﻿using TelegramBotExtension.Handling.Handlers;
+﻿using System.Reflection.Metadata;
+using TelegramBotExtension.Handling.Handlers;
 
 namespace TelegramBotExtension.Handling
 {
     public class Router
     {
-        public List<Handler> Handlers;
+        public List<IHandler> Handlers { get; set; }
 
-        public Router(List<Handler> handlers)
+        public Router(List<IHandler> handlers)
         {
             Handlers = handlers;
         }
