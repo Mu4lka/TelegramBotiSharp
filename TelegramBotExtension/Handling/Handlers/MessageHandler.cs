@@ -4,7 +4,12 @@ namespace TelegramBotExtension.Handling.Handlers
 {
     public abstract class MessageHandler : IHandler
     {
-        public abstract Task HandleMessage(MessageContext context);
+        public async Task Execute(Context context)
+        {
+            await Handle((MessageContext)context);
+        }
+
+        public abstract Task Handle(MessageContext context);
 
     }
 

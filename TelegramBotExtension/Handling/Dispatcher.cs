@@ -8,9 +8,9 @@ namespace TelegramBotExtension.Handling
     {
         public List<Router> Routers { get; set; }
 
-        public Dispatcher(List<Router> routers)
+        public Dispatcher()
         {
-            Routers = routers;
+            Routers = new List<Router>();
         }
 
         public Task HandlePollingErrorAsync(ITelegramBotClient botClient, Exception exception, CancellationToken cancellationToken)
@@ -25,6 +25,7 @@ namespace TelegramBotExtension.Handling
 
         private Task Handle(ITelegramBotClient botClient, Update update, CancellationToken cancellationToken)
         {
+            //TO DO
             throw new NotImplementedException();
         }
 

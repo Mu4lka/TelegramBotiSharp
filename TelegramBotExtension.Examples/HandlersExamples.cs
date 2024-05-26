@@ -9,7 +9,7 @@ namespace TelegramBotExtension.Examples
     [DataFilter("Hello")]
     internal class AnswerOnHello : MessageHandler
     {
-        public override async Task HandleMessage(MessageContext context)
+        public override async Task Handle(MessageContext context)
         {
             await context.Bot.SendTextMessageAsync(context.Message.Chat.Id, "Answer Hello");
         }
@@ -23,7 +23,9 @@ namespace TelegramBotExtension.Examples
         public static async Task Main()
         {
             var botClient = new TelegramBotClient(_token);
-            Router authorization = new Router();
+            Router common = new Router(
+                new List<IHandler>() { new AnswerOnHello(), }
+                );
             Dispatcher handler = new Dispatcher();
             await botClient.ReceiveAsync(handler);
         }

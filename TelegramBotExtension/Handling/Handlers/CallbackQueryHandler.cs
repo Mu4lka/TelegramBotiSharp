@@ -4,7 +4,12 @@ namespace TelegramBotExtension.Handling.Handlers
 {
     public abstract class CallbackQueryHandler : IHandler
     {
-        public abstract Task HandleCallbackQuery(CallbackQueryContext context);
+        public async Task Execute(Context context)
+        {
+            await Handle((CallbackQueryContext)context);
+        }
+
+        public abstract Task Handle(CallbackQueryContext context);
 
     }
 
