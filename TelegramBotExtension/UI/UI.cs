@@ -4,7 +4,7 @@ namespace TelegramBotExtension.UI
 {
     public class UI
     {
-        public static InlineKeyboardMarkup FromInlineButtons(string[] buttons)
+        public static InlineKeyboardMarkup GetInlineButtons(string[] buttons)
         {
             List<List<InlineKeyboardButton>> inlineKeyboardButtons = new List<List<InlineKeyboardButton>>();
 

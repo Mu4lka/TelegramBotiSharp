@@ -6,14 +6,43 @@ using TelegramBotExtension.Types;
 
 namespace TelegramBotExtension.Examples
 {
+    [CastomFilter()]
     [DataFilter("Hello")]
     internal class AnswerOnHello : MessageHandler
     {
         public override async Task Handle(MessageContext context)
         {
-            await context.Bot.SendTextMessageAsync(context.Message.Chat.Id, "Answer Hello");
+            string[] buttons = { "Hello", "Print" };
+            var inlineButtons = UI.UI.GetInlineButtons(buttons);
+            await context.Bot.SendTextMessageAsync(context.Message.Chat.Id, "Answer Hello", replyMarkup: inlineButtons);
         }
 
+    }
+
+    [DataFilter("Print")]
+    internal class AnswerPrint : CallbackQueryHandler
+    {
+        public override async Task Handle(CallbackQueryContext context)
+        {
+            await context.Bot.SendTextMessageAsync(context.CallbackQuery.From.Id, "Answer Print");
+        }
+    }
+
+    [Command("start")]
+    internal class CommandStart : MessageHandler
+    {
+        public override async Task Handle(MessageContext context)
+        {
+            await context.Bot.SendTextMessageAsync(context.Message.From.Id, "start");
+        }
+    }
+
+    internal class AnswerOnCallbackQuery : CallbackQueryHandler
+    {
+        public override async Task Handle(CallbackQueryContext context)
+        {
+            await context.Bot.SendTextMessageAsync(context.CallbackQuery.From.Id, context.Data);
+        }
     }
 
     internal class Program
@@ -24,10 +53,16 @@ namespace TelegramBotExtension.Examples
         {
             var botClient = new TelegramBotClient(_token);
             Router common = new Router(
-                new List<IHandler>() { new AnswerOnHello(), }
-                );
-            Dispatcher handler = new Dispatcher();
-            await botClient.ReceiveAsync(handler);
+                new List<IHandler>() {
+                    new AnswerOnHello(),
+                    new AnswerPrint(),
+                    new AnswerOnCallbackQuery(),
+                    new CommandStart(),
+
+                });
+            Dispatcher dispatcher = new Dispatcher();
+            dispatcher.Routers.Add(common);
+            await botClient.ReceiveAsync(dispatcher);
         }
 
     }

@@ -52,15 +52,13 @@ namespace TelegramBotExtension.Handling
         {
             var filters = handler.GetType().GetCustomAttributes(false);
 
-            if (filters.Length == 0)
-                return true;
-
             foreach (FilterAttribute filter in filters)
             {
                 if (await filter.Call(context))
-                    return true;
+                    continue;
+                else return false;
             }
-            return false;
+            return true;
         }
 
         private (List<IHandler>, Context) CreateHandlersAndContext(Router router, UpdateContext updateContext)

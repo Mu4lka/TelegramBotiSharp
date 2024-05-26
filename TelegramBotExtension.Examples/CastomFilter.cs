@@ -12,7 +12,7 @@ namespace TelegramBotExtension.Examples
         {
             if (context is not MessageContext messageContext)
                 return false;
-
+            
             if (messageContext.Message.From == null)
                 return false;
 
