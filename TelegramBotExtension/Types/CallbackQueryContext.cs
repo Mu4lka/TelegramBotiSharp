@@ -12,7 +12,7 @@ namespace TelegramBotExtension.Types
             ITelegramBotClient bot,
             CancellationToken cancellationToken,
             CallbackQuery callbackQuery
-            ) : base(bot, cancellationToken, callbackQuery.From.Id, callbackQuery.Data)
+            ) : base(bot, cancellationToken, callbackQuery.From.Id, callbackQuery.Data!)
         {
             CallbackQuery = callbackQuery;
         }

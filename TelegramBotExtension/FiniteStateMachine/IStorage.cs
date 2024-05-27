@@ -6,7 +6,9 @@
 
         string GetState(long id);
 
-        void UpdateData(long id, Dictionary<string, object> data);
+        void UpdateData(long id, (string, object) data);
+
+        void UpdateData(long id, (string, object)[] data);
 
         void SetData(long id, Dictionary<string, object> data);
 

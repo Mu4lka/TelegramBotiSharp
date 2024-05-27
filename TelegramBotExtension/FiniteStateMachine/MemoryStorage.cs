@@ -13,16 +13,23 @@
         public string GetState(long id)
         {
             if (!States.ContainsKey(id))
-                SetState(id, null);
+                SetState(id, null!);
             return States[id];
         }
 
-        public void UpdateData(long id, Dictionary<string, object> data)
+        public void UpdateData(long id, (string, object) data)
+        {
+            if (!Data.ContainsKey(id))
+                Data[id] = [];
+            Data[id].Add(data.Item1, data.Item2);
+        }
+
+        public void UpdateData(long id, (string, object)[] data)
         {
             if (!Data.ContainsKey(id))
                 Data[id] = [];
             foreach (var kvp in data)
-                Data[id].Add(kvp.Key, kvp.Value);
+                Data[id].Add(kvp.Item1, kvp.Item2);
         }
 
         public void SetData(long id, Dictionary<string, object> data)

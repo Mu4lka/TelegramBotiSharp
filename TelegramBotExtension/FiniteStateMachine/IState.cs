@@ -6,7 +6,9 @@
 
         string GetState();
 
-        void UpdateData(Dictionary<string, object> data);
+        void UpdateData((string, object) data);
+
+        void UpdateData((string, object)[] data);
 
         void SetData(Dictionary<string, object> data);
 

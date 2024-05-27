@@ -15,7 +15,9 @@
 
         public string GetState() => Storage.GetState(_id);
 
-        public void UpdateData(Dictionary<string, object> data) => Storage.UpdateData(_id, data);
+        public void UpdateData((string, object) data) => Storage.UpdateData(_id, data);
+
+        public void UpdateData((string, object)[] data) => Storage.UpdateData(_id, data);
 
         public void SetData(Dictionary<string, object> data) => Storage.SetData(_id, data);
 

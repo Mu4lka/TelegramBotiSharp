@@ -12,7 +12,7 @@ namespace TelegramBotExtension.Types
             ITelegramBotClient bot,
             CancellationToken cancellationToken,
             Message message
-            ) : base(bot, cancellationToken, message.From.Id, message.Text)
+            ) : base(bot, cancellationToken, message.From!.Id, message.Text!)
         {
             Message = message;
         }
