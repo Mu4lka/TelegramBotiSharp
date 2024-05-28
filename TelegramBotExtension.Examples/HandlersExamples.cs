@@ -24,7 +24,7 @@ namespace TelegramBotExtension.Examples
         [StateFilter("name")]
         public static void HandleGettingName(MessageContext context)
         {
-            context.State.UpdateData(("name", context.Message.Text!));
+            context.State.UpdateData("name", context.Message.Text!);
             context.Bot.SendTextMessageAsync(
                 context.Message.From!.Id,
                 "Are you over 18?",

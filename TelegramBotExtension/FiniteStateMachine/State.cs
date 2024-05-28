@@ -2,7 +2,7 @@
 {
     public class State: IState
     {
-        public static IStorage Storage = new MemoryStorage();
+        private static IStorage _storage = new MemoryStorage();
 
         private readonly long _id;
 
@@ -11,19 +11,19 @@
             _id = id;
         }
 
-        public void SetState(string state) => Storage.SetState(_id, state);
+        public void SetState(string? state) => _storage.SetState(_id, state);
 
-        public string GetState() => Storage.GetState(_id);
+        public string? GetState() => _storage.GetState(_id);
 
-        public void UpdateData((string, object) data) => Storage.UpdateData(_id, data);
+        public void UpdateData(string key, object value) => _storage.UpdateData(_id, key, value);
 
-        public void UpdateData((string, object)[] data) => Storage.UpdateData(_id, data);
+        public void UpdateData(Dictionary<string, object> data) => _storage.UpdateData(_id, data);
 
-        public void SetData(Dictionary<string, object> data) => Storage.SetData(_id, data);
+        public void SetData(Dictionary<string, object> data) => _storage.SetData(_id, data);
 
-        public Dictionary<string, object> GetData() => Storage.GetData(_id);
+        public Dictionary<string, object> GetData() => _storage.GetData(_id);
 
-        public void Clear() => Storage.Clear(_id);
+        public void Clear() => _storage.Clear(_id);
 
     }
 

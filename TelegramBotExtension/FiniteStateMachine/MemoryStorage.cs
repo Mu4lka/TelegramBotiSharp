@@ -1,53 +1,62 @@
-﻿namespace TelegramBotExtension.FiniteStateMachine
+﻿using System.Collections.Concurrent;
+
+namespace TelegramBotExtension.FiniteStateMachine
 {
     public class MemoryStorage : IStorage
     {
-        public static Dictionary<long, string> States = [];
-        public static Dictionary<long, Dictionary<string, object>> Data = [];
+        private readonly ConcurrentDictionary<long, string?> _states;
+        private readonly ConcurrentDictionary<long, ConcurrentDictionary<string, object>> _data;
 
-        public void SetState(long id, string state)
+        public MemoryStorage()
         {
-            States[id] = state;
+            _states = [];
+            _data = [];
         }
 
-        public string GetState(long id)
+        public MemoryStorage(
+            ConcurrentDictionary<long, string?> states,
+            ConcurrentDictionary<long, ConcurrentDictionary<string, object>> data
+            )
         {
-            if (!States.ContainsKey(id))
-                SetState(id, null!);
-            return States[id];
+            _states = states;
+            _data = data;
         }
 
-        public void UpdateData(long id, (string, object) data)
+        public void SetState(long id, string? state)
         {
-            if (!Data.ContainsKey(id))
-                Data[id] = [];
-            Data[id].Add(data.Item1, data.Item2);
+            _states[id] = state;
         }
 
-        public void UpdateData(long id, (string, object)[] data)
+        public string? GetState(long id)
         {
-            if (!Data.ContainsKey(id))
-                Data[id] = [];
-            foreach (var kvp in data)
-                Data[id].Add(kvp.Item1, kvp.Item2);
+            return _states.GetOrAdd(id, id => null);
+        }
+
+        public void UpdateData(long id, string key, object value)
+        {
+            _data[id].AddOrUpdate(key, value, (key, oldValue) => value);
+        }
+
+        public void UpdateData(long id, Dictionary<string, object> data)
+        {
+            foreach (var item in data)
+                _data[id].AddOrUpdate(item.Key, item.Value, (key, oldValue) => item.Value);
         }
 
         public void SetData(long id, Dictionary<string, object> data)
         {
-            Data[id] = data;
+            _data[id] = new ConcurrentDictionary<string, object>(data);
         }
 
         public Dictionary<string, object> GetData(long id)
         {
-            if (!Data.ContainsKey(id))
-                SetData(id, []);
-            return Data[id];
+            return new Dictionary<string, object>(_data[id]);
         }
 
         public void Clear(long id)
         {
-            States.Remove(id);
-            Data.Remove(id);
+            _states.TryRemove(id, out _);
+            _data.TryRemove(id, out _);
         }
 
     }

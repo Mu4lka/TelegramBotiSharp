@@ -2,13 +2,13 @@
 {
     internal interface IState
     {
-        void SetState(string state);
+        void SetState(string? state);
 
-        string GetState();
+        string? GetState();
 
-        void UpdateData((string, object) data);
+        void UpdateData(string key, object value);
 
-        void UpdateData((string, object)[] data);
+        void UpdateData(Dictionary<string, object> data);
 
         void SetData(Dictionary<string, object> data);
 

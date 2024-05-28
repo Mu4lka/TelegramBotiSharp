@@ -2,13 +2,13 @@
 {
     public interface IStorage
     {
-        void SetState(long id, string state);
+        void SetState(long id, string? state);
 
-        string GetState(long id);
+        string? GetState(long id);
 
-        void UpdateData(long id, (string, object) data);
+        void UpdateData(long id, string key, object value);
 
-        void UpdateData(long id, (string, object)[] data);
+        void UpdateData(long id, Dictionary<string, object> data);
 
         void SetData(long id, Dictionary<string, object> data);
 
