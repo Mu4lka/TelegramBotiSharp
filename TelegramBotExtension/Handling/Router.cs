@@ -11,8 +11,8 @@ namespace TelegramBotExtension.Handling
 {
     public class Router : IUpdateHandler
     {
-        public delegate void Message(MessageContext context);
-        public delegate void CallbackQuery(CallbackQueryContext context);
+        public delegate Task Message(MessageContext context);
+        public delegate Task CallbackQuery(CallbackQueryContext context);
 
         public event Message? OnMessage;
         public event CallbackQuery? OnCallbackQuery;
@@ -51,13 +51,12 @@ namespace TelegramBotExtension.Handling
 
         private static async Task<bool> CheckFilters(MethodInfo method, Context context)
         {
-            var filters = method.GetCustomAttributes(false);
+            var filters = method.GetCustomAttributes(false).OfType<FilterAttribute>();
 
             foreach (FilterAttribute filter in filters)
             {
-                if (await filter.Call(context))
-                    continue;
-                else return false;
+                if (!await filter.Call(context))
+                    return false;
             }
             return true;
         }
