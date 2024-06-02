@@ -9,8 +9,8 @@ namespace TelegramBotExtension.FiniteStateMachine
 
         public MemoryStorage()
         {
-            _states = [];
-            _data = [];
+            _states = new();
+            _data = new();
         }
 
         public MemoryStorage(
@@ -29,18 +29,25 @@ namespace TelegramBotExtension.FiniteStateMachine
 
         public string? GetState(long id)
         {
-            return _states.GetOrAdd(id, id => null);
+            return _states.GetOrAdd(id, _ => null);
         }
 
         public void UpdateData(long id, string key, object value)
         {
-            _data[id].AddOrUpdate(key, value, (key, oldValue) => value);
+            _data.AddOrUpdate(
+                id,
+                new ConcurrentDictionary<string, object>(new[]{ new KeyValuePair<string, object>(key, value) }),
+                (existingId, existingData) =>
+                {
+                    existingData[key] = value;
+                    return existingData;
+                });
         }
 
         public void UpdateData(long id, Dictionary<string, object> data)
         {
             foreach (var item in data)
-                _data[id].AddOrUpdate(item.Key, item.Value, (key, oldValue) => item.Value);
+                UpdateData(id, item.Key, item.Value);
         }
 
         public void SetData(long id, Dictionary<string, object> data)
@@ -50,7 +57,7 @@ namespace TelegramBotExtension.FiniteStateMachine
 
         public Dictionary<string, object> GetData(long id)
         {
-            return new Dictionary<string, object>(_data[id]);
+            return _data.TryGetValue(id, out var data) ? new Dictionary<string, object>(data) : new();
         }
 
         public void Clear(long id)

@@ -8,6 +8,8 @@ namespace TelegramBotExtension.Examples
 {
     internal class CastomFilter : FilterAttribute
     {
+        public CastomFilter() : base(null) { }
+
         public override async Task<bool> Call(Context context)
         {
             if (context is not MessageContext messageContext)

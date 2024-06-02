@@ -9,6 +9,15 @@ namespace TelegramBotExtension.Examples
     {
         public static Router Router = new();
 
+        static RegistrationHandlers()
+        {
+            Router.OnMessage += HandleCommandStart;
+            Router.OnMessage += HandleGettingName;
+            Router.OnCallbackQuery += ProcessIfAdult;
+            Router.OnCallbackQuery += ProcessIfUnderage;
+            Router.OnMessage += Handle;
+        }
+
         public static async Task Handle(MessageContext context)
         {
             await context.Bot.SendTextMessageAsync(context.Message.From!.Id, "Hello");
@@ -54,26 +63,18 @@ namespace TelegramBotExtension.Examples
             context.State.Clear();
         }
 
-        public static void Subscribe()
-        {
-            Router.OnMessage += HandleCommandStart;
-            Router.OnMessage += HandleGettingName;
-            Router.OnCallbackQuery += ProcessIfAdult;
-            Router.OnCallbackQuery += ProcessIfUnderage;
-            Router.OnMessage += Handle;
-        }
-
     }
 
     internal class Program
     {
         private const string _token = "6562055962:AAEqE9F-vbMxHsRPx_BbjrKBrO2hBVcnT_o";
+        private static readonly Dispatcher _dispatcher = new();
 
         public static async Task Main()
         {
             var botClient = new TelegramBotClient(_token);
-            RegistrationHandlers.Subscribe();
-            await botClient.ReceiveAsync(RegistrationHandlers.Router);
+            _dispatcher.Routers.Add(RegistrationHandlers.Router);
+            await botClient.ReceiveAsync(_dispatcher);
         }
 
     }

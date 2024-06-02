@@ -7,8 +7,6 @@ namespace TelegramBotExtension.Filters
     {
         public string? Data { get; set; }
 
-        public FilterAttribute() { }
-
         public FilterAttribute(string? data)
         {
             Data = data;

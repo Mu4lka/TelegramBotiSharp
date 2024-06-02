@@ -1,6 +1,5 @@
 ﻿using System.Reflection;
 using Telegram.Bot;
-using Telegram.Bot.Polling;
 using Telegram.Bot.Types.Enums;
 using Telegram.Bot.Types;
 using TelegramBotExtension.Filters;
@@ -9,7 +8,7 @@ using TelegramBotExtension.Types;
 
 namespace TelegramBotExtension.Handling
 {
-    public class Router : IUpdateHandler
+    public class Router
     {
         public delegate Task Message(MessageContext context);
         public delegate Task CallbackQuery(CallbackQueryContext context);
@@ -17,33 +16,30 @@ namespace TelegramBotExtension.Handling
         public event Message? OnMessage;
         public event CallbackQuery? OnCallbackQuery;
 
-        public Task HandlePollingErrorAsync(ITelegramBotClient botClient, Exception exception, CancellationToken cancellationToken)
+        public async Task<bool> TryHandleUpdate(ITelegramBotClient botClient, Update update, CancellationToken cancellationToken)
         {
-            throw new NotImplementedException();
-        }
-
-        public async Task HandleUpdateAsync(ITelegramBotClient botClient, Update update, CancellationToken cancellationToken)
-        {
-            if (update.Type == UpdateType.Message)
-                await Handle(
-                    OnMessage!.GetInvocationList(),
+            if (update.Type == UpdateType.Message && OnMessage != null)
+                await HandleDelegates(
+                    OnMessage.GetInvocationList(),
                     new MessageContext(botClient, cancellationToken, update.Message!)
                     );
-            else if (update.Type == UpdateType.CallbackQuery)
-                await Handle(
-                    OnCallbackQuery!.GetInvocationList(),
+            else if (update.Type == UpdateType.CallbackQuery && OnCallbackQuery != null)
+                await HandleDelegates(
+                    OnCallbackQuery.GetInvocationList(),
                     new CallbackQueryContext(botClient, cancellationToken, update.CallbackQuery!)
                     );
-
+            else return false;
+            return true;
         }
 
-        public async Task Handle(Delegate[] delegates, Context context)
+        public static async Task HandleDelegates(Delegate[] delegates, Context context)
         {
             foreach (var method in delegates)
             {
                 if (await CheckFilters(method.Method, context))
                 {
-                    method.DynamicInvoke(context);
+                    if (method.DynamicInvoke(context) is Task task)
+                        await task;
                     return;
                 }
             }
