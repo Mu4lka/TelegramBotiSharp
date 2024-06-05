@@ -2,7 +2,7 @@
 
 namespace TelegramBotExtension.Types.Base
 {
-    public class BaseContext
+    public abstract class BaseContext
     {
         public ITelegramBotClient Bot { get; set; }
 
