@@ -30,37 +30,37 @@ namespace TelegramBotExtension.Examples
                 context.Message.From!.Id,
                 "Registration. Enter your name..."
                 );
-            context.State.SetState("name");
+            await context.State.SetState("name");
         }
 
         [StateFilter("name")]
         public static async Task HandleGettingName(MessageContext context)
         {
-            context.State.UpdateData("name", context.Message.Text!);
+            await context.State.UpdateData("name", context.Message.Text!);
             await context.Bot.SendTextMessageAsync(
                 context.Message.From!.Id,
                 "Are you over 18?",
                 replyMarkup: UI.UI.GetInlineButtons(["Yes", "No"])
                 );
-            context.State.SetState("isAdult");
+            await context.State.SetState("isAdult");
         }
 
         [StateFilter("isAdult")]
         [DataFilter("Yes")]
         public static async Task ProcessIfAdult(CallbackQueryContext context)
         {
-            var name = (string)context.State.GetData()["name"];
-            await context.Bot.SendTextMessageAsync(context.CallbackQuery.From!.Id, $"{name}, Welcome!");
-            context.State.Clear();
+            var data = await context.State.GetData();
+            await context.Bot.SendTextMessageAsync(context.CallbackQuery.From!.Id, $"{data["name"]}, Welcome!");
+            await context.State.Clear();
         }
 
         [StateFilter("isAdult")]
         [DataFilter("No")]
         public static async Task ProcessIfUnderage(CallbackQueryContext context)
         {
-            var name = (string)context.State.GetData()["name"];
-            await context.Bot.SendTextMessageAsync(context.CallbackQuery.From!.Id, $"{name}, Sorry but you're too young");
-            context.State.Clear();
+            var data = await context.State.GetData();
+            await context.Bot.SendTextMessageAsync(context.CallbackQuery.From!.Id, $"{data["name"]}, Sorry but you're too young");
+            await context.State.Clear();
         }
 
     }

@@ -29,7 +29,7 @@ namespace TelegramBotExtension.Tests.FiltersTests
                 {
                     new MessageEntity { Type = MessageEntityType.BotCommand }
                 },
-                From = new User()
+                From = new User { Id = 1 }
             };
         }
 
@@ -101,5 +101,7 @@ namespace TelegramBotExtension.Tests.FiltersTests
             // Assert
             Assert.IsFalse(result);
         }
+
     }
+
 }

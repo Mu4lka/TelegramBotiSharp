@@ -2,19 +2,19 @@
 {
     internal interface IState
     {
-        void SetState(string? state);
+        Task SetState(string? state);
 
-        string? GetState();
+        Task<string?> GetState();
 
-        void UpdateData(string key, object value);
+        Task UpdateData(string key, object value);
 
-        void UpdateData(Dictionary<string, object> data);
+        Task UpdateData(Dictionary<string, object> data);
 
-        void SetData(Dictionary<string, object> data);
+        Task SetData(Dictionary<string, object> data);
 
-        public Dictionary<string, object> GetData();
+        Task<Dictionary<string, object>> GetData();
 
-        void Clear();
+        Task Clear();
 
     }
 

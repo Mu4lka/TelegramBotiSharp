@@ -98,6 +98,7 @@ namespace TelegramBotExtension.Tests.FiltersTests
             // Assert
             Assert.IsTrue(result);
         }
+
     }
 
 }

@@ -6,9 +6,10 @@ namespace TelegramBotExtension.Filters
     {
         public StateFilter(string state) : base(state) { }
 
-        public override Task<bool> Call(Context context)
+        public override async Task<bool> Call(Context context)
         {
-            return Task.FromResult(context.State.GetState() == Data);
+            var state = await context.State.GetState();
+            return state == Data;
         }
 
     }
