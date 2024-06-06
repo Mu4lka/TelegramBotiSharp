@@ -67,7 +67,7 @@ namespace TelegramBotExtension.Examples
 
     internal class Program
     {
-        private const string _token = "6562055962:AAEqE9F-vbMxHsRPx_BbjrKBrO2hBVcnT_o";
+        private const string _token = "YOUR_TOKEN";
         private static readonly Dispatcher _dispatcher = new();
 
         public static async Task Main()

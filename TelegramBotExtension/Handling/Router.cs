@@ -16,7 +16,7 @@ namespace TelegramBotExtension.Handling
         public event Message? OnMessage;
         public event CallbackQuery? OnCallbackQuery;
 
-        public async Task<bool> TryHandleUpdate(ITelegramBotClient botClient, Update update, CancellationToken cancellationToken)
+        public virtual async Task<bool> TryHandleUpdate(ITelegramBotClient botClient, Update update, CancellationToken cancellationToken)
         {
             if (update.Type == UpdateType.Message && OnMessage != null)
                 await HandleDelegates(
