@@ -2,7 +2,7 @@
 {
     public class State: IState
     {
-        private static IStorage _storage = new MemoryStorage();
+        public static IStorage Storage = new MemoryStorage();
 
         private readonly long _id;
 
@@ -11,19 +11,19 @@
             _id = id;
         }
 
-        public async Task SetState(string? state) => await _storage.SetState(_id, state);
+        public async Task SetState(string? state) => await Storage.SetState(_id, state);
 
-        public async Task<string?> GetState() => await _storage.GetState(_id);
+        public async Task<string?> GetState() => await Storage.GetState(_id);
 
-        public async Task UpdateData(string key, object value) => await _storage.UpdateData(_id, key, value);
+        public async Task UpdateData(string key, object value) => await Storage.UpdateData(_id, key, value);
 
-        public async Task UpdateData(Dictionary<string, object> data) => await _storage.UpdateData(_id, data);
+        public async Task UpdateData(Dictionary<string, object> data) => await Storage.UpdateData(_id, data);
 
-        public async Task SetData(Dictionary<string, object> data) => await _storage.SetData(_id, data);
+        public async Task SetData(Dictionary<string, object> data) => await Storage.SetData(_id, data);
 
-        public async Task<Dictionary<string, object>> GetData() => await _storage.GetData(_id);
+        public async Task<Dictionary<string, object>> GetData() => await Storage.GetData(_id);
 
-        public async Task Clear() => await _storage.Clear(_id);
+        public async Task Clear() => await Storage.Clear(_id);
 
     }
 
