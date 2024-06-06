@@ -1,68 +1,80 @@
 ﻿using Telegram.Bot;
-using TelegramBotExtension.Handling.Handlers;
 using TelegramBotExtension.Handling;
 using TelegramBotExtension.Filters;
 using TelegramBotExtension.Types;
 
 namespace TelegramBotExtension.Examples
 {
-    [CastomFilter()]
-    [DataFilter("Hello")]
-    internal class AnswerOnHello : MessageHandler
+    internal class RegistrationHandlers
     {
-        public override async Task Handle(MessageContext context)
+        public static Router Router = new();
+
+        static RegistrationHandlers()
         {
-            string[] buttons = { "Hello", "Print" };
-            var inlineButtons = UI.UI.GetInlineButtons(buttons);
-            await context.Bot.SendTextMessageAsync(context.Message.Chat.Id, "Answer Hello", replyMarkup: inlineButtons);
+            Router.OnMessage += HandleCommandStart;
+            Router.OnMessage += HandleGettingName;
+            Router.OnCallbackQuery += ProcessIfAdult;
+            Router.OnCallbackQuery += ProcessIfUnderage;
+            Router.OnMessage += Handle;
         }
 
-    }
-
-    [DataFilter("Print")]
-    internal class AnswerPrint : CallbackQueryHandler
-    {
-        public override async Task Handle(CallbackQueryContext context)
+        public static async Task Handle(MessageContext context)
         {
-            await context.Bot.SendTextMessageAsync(context.CallbackQuery.From.Id, "Answer Print");
+            await context.Bot.SendTextMessageAsync(context.Message.From!.Id, "Hello");
         }
-    }
 
-    [Command("start")]
-    internal class CommandStart : MessageHandler
-    {
-        public override async Task Handle(MessageContext context)
+        [Command("start")]
+        public static async Task HandleCommandStart(MessageContext context)
         {
-            await context.Bot.SendTextMessageAsync(context.Message.From.Id, "start");
+            await context.Bot.SendTextMessageAsync(
+                context.Message.From!.Id,
+                "Registration. Enter your name..."
+                );
+            await context.State.SetState("name");
         }
-    }
 
-    internal class AnswerOnCallbackQuery : CallbackQueryHandler
-    {
-        public override async Task Handle(CallbackQueryContext context)
+        [StateFilter("name")]
+        public static async Task HandleGettingName(MessageContext context)
         {
-            await context.Bot.SendTextMessageAsync(context.CallbackQuery.From.Id, context.Data);
+            await context.State.UpdateData("name", context.Message.Text!);
+            await context.Bot.SendTextMessageAsync(
+                context.Message.From!.Id,
+                "Are you over 18?",
+                replyMarkup: UI.UI.GetInlineButtons(["Yes", "No"])
+                );
+            await context.State.SetState("isAdult");
         }
+
+        [StateFilter("isAdult")]
+        [DataFilter("Yes")]
+        public static async Task ProcessIfAdult(CallbackQueryContext context)
+        {
+            var data = await context.State.GetData();
+            await context.Bot.SendTextMessageAsync(context.CallbackQuery.From!.Id, $"{data["name"]}, Welcome!");
+            await context.State.Clear();
+        }
+
+        [StateFilter("isAdult")]
+        [DataFilter("No")]
+        public static async Task ProcessIfUnderage(CallbackQueryContext context)
+        {
+            var data = await context.State.GetData();
+            await context.Bot.SendTextMessageAsync(context.CallbackQuery.From!.Id, $"{data["name"]}, Sorry but you're too young");
+            await context.State.Clear();
+        }
+
     }
 
     internal class Program
     {
         private const string _token = "6562055962:AAEqE9F-vbMxHsRPx_BbjrKBrO2hBVcnT_o";
+        private static readonly Dispatcher _dispatcher = new();
 
         public static async Task Main()
         {
             var botClient = new TelegramBotClient(_token);
-            Router common = new Router(
-                new List<IHandler>() {
-                    new AnswerOnHello(),
-                    new AnswerPrint(),
-                    new AnswerOnCallbackQuery(),
-                    new CommandStart(),
-
-                });
-            Dispatcher dispatcher = new Dispatcher();
-            dispatcher.Routers.Add(common);
-            await botClient.ReceiveAsync(dispatcher);
+            _dispatcher.Routers.Add(RegistrationHandlers.Router);
+            await botClient.ReceiveAsync(_dispatcher);
         }
 
     }

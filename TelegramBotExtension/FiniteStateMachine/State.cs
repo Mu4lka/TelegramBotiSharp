@@ -11,17 +11,19 @@
             _id = id;
         }
 
-        public void SetState(string state) => Storage.SetState(_id, state);
+        public async Task SetState(string? state) => await Storage.SetState(_id, state);
 
-        public string GetState() => Storage.GetState(_id);
+        public async Task<string?> GetState() => await Storage.GetState(_id);
 
-        public void UpdateData(Dictionary<string, object> data) => Storage.UpdateData(_id, data);
+        public async Task UpdateData(string key, object value) => await Storage.UpdateData(_id, key, value);
 
-        public void SetData(Dictionary<string, object> data) => Storage.SetData(_id, data);
+        public async Task UpdateData(Dictionary<string, object> data) => await Storage.UpdateData(_id, data);
 
-        public Dictionary<string, object> GetData() => Storage.GetData(_id);
+        public async Task SetData(Dictionary<string, object> data) => await Storage.SetData(_id, data);
 
-        public void Clear() => Storage.Clear(_id);
+        public async Task<Dictionary<string, object>> GetData() => await Storage.GetData(_id);
+
+        public async Task Clear() => await Storage.Clear(_id);
 
     }
 

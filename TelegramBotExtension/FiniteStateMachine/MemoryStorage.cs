@@ -1,46 +1,76 @@
-﻿namespace TelegramBotExtension.FiniteStateMachine
+﻿using System.Collections.Concurrent;
+
+namespace TelegramBotExtension.FiniteStateMachine
 {
     public class MemoryStorage : IStorage
     {
-        public static Dictionary<long, string> States = [];
-        public static Dictionary<long, Dictionary<string, object>> Data = [];
+        private readonly ConcurrentDictionary<long, string?> _states;
+        private readonly ConcurrentDictionary<long, ConcurrentDictionary<string, object>> _data;
 
-        public void SetState(long id, string state)
+        public MemoryStorage()
         {
-            States[id] = state;
+            _states = new ConcurrentDictionary<long, string?>();
+            _data = new ConcurrentDictionary<long, ConcurrentDictionary<string, object>>();
         }
 
-        public string GetState(long id)
+        public Task SetState(long id, string? state)
         {
-            if (!States.ContainsKey(id))
-                SetState(id, null);
-            return States[id];
+            _states[id] = state;
+            return Task.CompletedTask;
         }
 
-        public void UpdateData(long id, Dictionary<string, object> data)
+        public Task<string?> GetState(long id)
         {
-            if (!Data.ContainsKey(id))
-                Data[id] = [];
-            foreach (var kvp in data)
-                Data[id].Add(kvp.Key, kvp.Value);
+            _states.TryGetValue(id, out var state);
+            return Task.FromResult(state);
         }
 
-        public void SetData(long id, Dictionary<string, object> data)
+        public async Task UpdateData(long id, string key, object value)
         {
-            Data[id] = data;
+            await Task.Run(() =>
+            {
+                _data.AddOrUpdate(
+                    id,
+                    new ConcurrentDictionary<string, object>(new[] { new KeyValuePair<string, object>(key, value) }),
+                    (existingId, existingData) =>
+                    {
+                        existingData[key] = value;
+                        return existingData;
+                    });
+            });
         }
 
-        public Dictionary<string, object> GetData(long id)
+        public async Task UpdateData(long id, Dictionary<string, object> data)
         {
-            if (!Data.ContainsKey(id))
-                SetData(id, []);
-            return Data[id];
+            foreach (var item in data)
+            {
+                await UpdateData(id, item.Key, item.Value);
+            }
         }
 
-        public void Clear(long id)
+        public Task SetData(long id, Dictionary<string, object> data)
         {
-            States.Remove(id);
-            Data.Remove(id);
+            _data[id] = new ConcurrentDictionary<string, object>(data);
+            return Task.CompletedTask;
+        }
+
+        public Task<Dictionary<string, object>> GetData(long id)
+        {
+            if (_data.TryGetValue(id, out var data))
+            {
+                return Task.FromResult(new Dictionary<string, object>(data));
+            }
+            else
+            {
+                return Task.FromResult(new Dictionary<string, object>());
+            }
+        }
+
+        public Task Clear(long id)
+        {
+            _states.TryRemove(id, out var _);
+            _data.TryRemove(id, out var _);
+            return Task.CompletedTask;
         }
 
     }
