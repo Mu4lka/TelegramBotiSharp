@@ -5,7 +5,7 @@
 
 * Easy creation of handlers. Here is an example of a handler that processes the /start command:
 
-
+```C#
         [Command("start")]
         public static async Task HandleCommandStart(MessageContext context)
         {
@@ -14,9 +14,9 @@
                 "Registration. Enter your name..."
                 );
         }
-
+```
 These handlers (methods) must subscribe to the corresponding events that are defined in the Router class or in the Dispatcher:
-
+```C#
     internal class HandlersExemples
     {
         public static Router Router = new();
@@ -50,13 +50,14 @@ These handlers (methods) must subscribe to the corresponding events that are def
         }
 
     }
+```
 Detailed examples in the [file](https://github.com/Mu4lka/TelegramBotExtension/blob/master/TelegramBotExtension.Examples/HandlersExamples.cs).
 
 * Handlers can have filters (attributes), if all filters are passed, then this handler will be called
 * The state machine is implemented, and you can also override its storage
 * You can create custom filters that inherit from the FilterAttribute class:
 
-
+```C#
     internal class CastomFilter : FilterAttribute
     {
         public CastomFilter() : base(null) { }
@@ -74,7 +75,6 @@ Detailed examples in the [file](https://github.com/Mu4lka/TelegramBotExtension/b
             await context.Bot.SendTextMessageAsync(user.Id, "CastomFilter");
             return true;
         }
-
     }
-
+```
 #### Not all types of telegram objects are supported yet, this project will continue to be supported and improved
