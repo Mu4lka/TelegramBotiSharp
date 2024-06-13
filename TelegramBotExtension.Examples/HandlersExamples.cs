@@ -1,7 +1,7 @@
 ﻿using Telegram.Bot;
 using TelegramBotExtension.Handling;
 using TelegramBotExtension.Filters;
-using TelegramBotExtension.Types;
+using TelegramBotExtension.Types.Contexts;
 
 namespace TelegramBotExtension.Examples;
 
@@ -66,7 +66,7 @@ internal class RegistrationHandlers
 
 internal class Program
 {
-    private const string _token = "YOUR_TOKEN";
+    private const string _token = "6562055962:AAEzNvSO8NqTtGokTKNwHSEYleJr56_KFDU";
     private static readonly Dispatcher _dispatcher = new();
 
     public static async Task Main()

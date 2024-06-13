@@ -1,4 +1,4 @@
-﻿using TelegramBotExtension.Types.Base;
+﻿using TelegramBotExtension.Types.Contexts.Base;
 
 namespace TelegramBotExtension.Filters;
 

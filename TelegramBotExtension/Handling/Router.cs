@@ -3,20 +3,17 @@ using Telegram.Bot;
 using Telegram.Bot.Types.Enums;
 using Telegram.Bot.Types;
 using TelegramBotExtension.Filters;
-using TelegramBotExtension.Types.Base;
-using TelegramBotExtension.Types;
+using TelegramBotExtension.Types.Contexts.Base;
+using TelegramBotExtension.Types.Contexts;
 
 namespace TelegramBotExtension.Handling;
 
-public class Router
+public class Router : IRouter
 {
-    public delegate Task Message(MessageContext context);
-    public delegate Task CallbackQuery(CallbackQueryContext context);
+    public event IRouter.Message? OnMessage;
+    public event IRouter.CallbackQuery? OnCallbackQuery;
 
-    public event Message? OnMessage;
-    public event CallbackQuery? OnCallbackQuery;
-
-    public virtual async Task<bool> TryHandleUpdate(ITelegramBotClient botClient, Update update, CancellationToken cancellationToken)
+    public virtual async Task<bool> TryHandle(ITelegramBotClient botClient, Update update, CancellationToken cancellationToken)
     {
         Delegate[]? delegates;
         Context? context;
@@ -37,7 +34,7 @@ public class Router
         return true;
     }
 
-    public static async Task HandleDelegates(Delegate[] delegates, Context context)
+    private static async Task HandleDelegates(Delegate[] delegates, Context context)
     {
         foreach (var del in delegates)
         {

@@ -1,7 +1,7 @@
 using Telegram.Bot.Types.Enums;
 using Telegram.Bot.Types;
 using TelegramBotExtension.Filters;
-using TelegramBotExtension.Types;
+using TelegramBotExtension.Types.Contexts;
 using Moq;
 using Telegram.Bot;
 
@@ -25,10 +25,7 @@ public class CommandTests
         _message = new Message
         {
             Text = "/" + _commandText,
-            Entities = new[]
-            {
-                new MessageEntity { Type = MessageEntityType.BotCommand }
-            },
+            Entities =[ new() { Type = MessageEntityType.BotCommand }],
             From = new User { Id = 1 }
         };
     }
@@ -43,7 +40,7 @@ public class CommandTests
         var result = await _command.Call(context);
 
         // Assert
-        Assert.IsTrue(result);
+        Assert.That(result, Is.True);
     }
 
     [Test]
@@ -57,7 +54,7 @@ public class CommandTests
         var result = await _command.Call(context);
 
         // Assert
-        Assert.IsFalse(result);
+        Assert.That(result, Is.False);
     }
 
     [Test]
@@ -71,34 +68,34 @@ public class CommandTests
         var result = await _command.Call(context);
 
         // Assert
-        Assert.IsFalse(result);
+        Assert.That(result, Is.False);
     }
 
     [Test]
     public async Task Call_WhenEntityTypeDoesNotMatch_ReturnsFalse()
     {
         // Arrange
-        _message.Entities = new[] { new MessageEntity { Type = MessageEntityType.Cashtag } };
+        _message.Entities = [new MessageEntity { Type = MessageEntityType.Cashtag }];
         var context = new MessageContext(_mockBotClient.Object, CancellationToken.None, _message);
 
         // Act
         var result = await _command.Call(context);
 
         // Assert
-        Assert.IsFalse(result);
+        Assert.That(result, Is.False);
     }
 
     [Test]
     public async Task Call_WhenNullMessage_ReturnsFalse()
     {
         // Arrange
-        var nullMessage = new Message { From = new User { Id = 123456789 } }; // Ensure User is not null
+        var nullMessage = new Message { From = new User { Id = 123456789 } };
         var context = new MessageContext(_mockBotClient.Object, CancellationToken.None, nullMessage);
 
         // Act
         var result = await _command.Call(context);
 
         // Assert
-        Assert.IsFalse(result);
+        Assert.That(result, Is.False);
     }
 }

@@ -1,8 +1,8 @@
 ﻿using Telegram.Bot;
 using Telegram.Bot.Types;
 using TelegramBotExtension.Filters;
-using TelegramBotExtension.Types;
-using TelegramBotExtension.Types.Base;
+using TelegramBotExtension.Types.Contexts;
+using TelegramBotExtension.Types.Contexts.Base;
 
 namespace TelegramBotExtension.Examples;
 

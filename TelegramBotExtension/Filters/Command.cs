@@ -1,6 +1,6 @@
 ﻿using Telegram.Bot.Types.Enums;
-using TelegramBotExtension.Types;
-using TelegramBotExtension.Types.Base;
+using TelegramBotExtension.Types.Contexts;
+using TelegramBotExtension.Types.Contexts.Base;
 
 namespace TelegramBotExtension.Filters;
 
