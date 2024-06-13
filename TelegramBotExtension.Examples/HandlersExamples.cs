@@ -5,6 +5,12 @@ using TelegramBotExtension.Types.Contexts;
 
 namespace TelegramBotExtension.Examples;
 
+enum State
+{
+    reg,
+    isAdult
+}
+
 internal class RegistrationHandlers
 {
     public static Router Router = new();
@@ -15,12 +21,6 @@ internal class RegistrationHandlers
         Router.OnMessage += HandleGettingName;
         Router.OnCallbackQuery += ProcessIfAdult;
         Router.OnCallbackQuery += ProcessIfUnderage;
-        Router.OnMessage += Handle;
-    }
-
-    public static async Task Handle(MessageContext context)
-    {
-        await context.Bot.SendTextMessageAsync(context.Message.From!.Id, "Hello");
     }
 
     [Command("start")]
@@ -30,10 +30,10 @@ internal class RegistrationHandlers
             context.Message.From!.Id,
             "Registration. Enter your name..."
             );
-        await context.State.SetState("name");
+        await context.State.SetState(nameof(State.reg));
     }
 
-    [StateFilter("name")]
+    [StateFilter(nameof(State.reg))]
     public static async Task HandleGettingName(MessageContext context)
     {
         await context.State.UpdateData("name", context.Message.Text!);
@@ -42,31 +42,37 @@ internal class RegistrationHandlers
             "Are you over 18?",
             replyMarkup: UI.UI.GetInlineButtons(["Yes", "No"])
             );
-        await context.State.SetState("isAdult");
+        await context.State.SetState(nameof(State.isAdult));
     }
 
-    [StateFilter("isAdult")]
+    [StateFilter(nameof(State.isAdult))]
     [DataFilter("Yes")]
     public static async Task ProcessIfAdult(CallbackQueryContext context)
     {
         var data = await context.State.GetData();
-        await context.Bot.SendTextMessageAsync(context.CallbackQuery.From!.Id, $"{data["name"]}, Welcome!");
+        await context.Bot.SendTextMessageAsync(
+            context.CallbackQuery.From!.Id,
+            $"{data["name"]}, Welcome!"
+            );
         await context.State.Clear();
     }
 
-    [StateFilter("isAdult")]
+    [StateFilter(nameof(State.isAdult))]
     [DataFilter("No")]
     public static async Task ProcessIfUnderage(CallbackQueryContext context)
     {
         var data = await context.State.GetData();
-        await context.Bot.SendTextMessageAsync(context.CallbackQuery.From!.Id, $"{data["name"]}, Sorry but you're too young");
+        await context.Bot.SendTextMessageAsync(
+            context.CallbackQuery.From!.Id,
+            $"{data["name"]}, Sorry but you're too young"
+            );
         await context.State.Clear();
     }
 }
 
 internal class Program
 {
-    private const string _token = "6562055962:AAEzNvSO8NqTtGokTKNwHSEYleJr56_KFDU";
+    private const string _token = "TOKEN";
     private static readonly Dispatcher _dispatcher = new();
 
     public static async Task Main()
