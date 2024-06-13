@@ -1,16 +1,11 @@
 ﻿using TelegramBotExtension.Types.Base;
 
-namespace TelegramBotExtension.Filters
+namespace TelegramBotExtension.Filters;
+
+public class DataFilter(string data) : FilterAttribute(data)
 {
-    public class DataFilter : FilterAttribute
+    public override Task<bool> Call(Context context)
     {
-        public DataFilter(string data) : base(data) { }
-
-        public override Task<bool> Call(Context context)
-        {
-            return Task.FromResult(Data == context.Data);
-        }
-
+        return Task.FromResult(Data == context.Data);
     }
-
 }

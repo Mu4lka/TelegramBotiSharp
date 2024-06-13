@@ -1,19 +1,10 @@
 ﻿using Telegram.Bot;
 
-namespace TelegramBotExtension.Types.Base
+namespace TelegramBotExtension.Types.Base;
+
+public abstract class BaseContext(ITelegramBotClient bot, CancellationToken cancellationToken)
 {
-    public abstract class BaseContext
-    {
-        public ITelegramBotClient Bot { get; set; }
+    public ITelegramBotClient Bot { get; set; } = bot;
 
-        public CancellationToken CancellationToken { get; set; }
-
-        public BaseContext(ITelegramBotClient bot, CancellationToken cancellationToken)
-        {
-            Bot = bot;
-            CancellationToken = cancellationToken;
-        }
-
-    }
-
+    public CancellationToken CancellationToken { get; set; } = cancellationToken;
 }

@@ -2,33 +2,28 @@
 using TelegramBotExtension.Types;
 using TelegramBotExtension.Types.Base;
 
-namespace TelegramBotExtension.Filters
+namespace TelegramBotExtension.Filters;
+
+public class Command(string command) : FilterAttribute(command)
 {
-    public class Command : FilterAttribute
+    private bool IsValidCommand(Context context)
     {
-        public Command(string command) : base(command) { }
+        if (context is not MessageContext messageContext)
+            return false;
 
-        private bool IsValidCommand(Context context)
-        {
-            if (context is not MessageContext messageContext)
-                return false;
+        var message = messageContext.Message;
 
-            var message = messageContext.Message;
+        if (message.Entities == null || message.Entities.Length == 0)
+            return false;
 
-            if (message.Entities == null || message.Entities.Length == 0)
-                return false;
+        if (message.Entities[0].Type != MessageEntityType.BotCommand)
+            return false;
 
-            if (message.Entities[0].Type != MessageEntityType.BotCommand)
-                return false;
-
-            return message.Text != null && message.Text == "/" + Data;
-        }
-
-        public override Task<bool> Call(Context context)
-        {
-            return Task.FromResult(IsValidCommand(context));
-        }
-
+        return message.Text != null && message.Text == "/" + Data;
     }
 
+    public override Task<bool> Call(Context context)
+    {
+        return Task.FromResult(IsValidCommand(context));
+    }
 }

@@ -1,30 +1,22 @@
-﻿namespace TelegramBotExtension.FiniteStateMachine
+﻿namespace TelegramBotExtension.FiniteStateMachine;
+
+public class State(long id) : IState
 {
-    public class State: IState
-    {
-        public static IStorage Storage = new MemoryStorage();
+    public static IStorage Storage = new MemoryStorage();
 
-        private readonly long _id;
+    private readonly long _id = id;
 
-        public State(long id)
-        {
-            _id = id;
-        }
+    public Task SetState(string? state) => Storage.SetState(_id, state);
 
-        public async Task SetState(string? state) => await Storage.SetState(_id, state);
+    public Task<string?> GetState() => Storage.GetState(_id);
 
-        public async Task<string?> GetState() => await Storage.GetState(_id);
+    public Task UpdateData(string key, object value) => Storage.UpdateData(_id, key, value);
 
-        public async Task UpdateData(string key, object value) => await Storage.UpdateData(_id, key, value);
+    public Task UpdateData(Dictionary<string, object> data) => Storage.UpdateData(_id, data);
 
-        public async Task UpdateData(Dictionary<string, object> data) => await Storage.UpdateData(_id, data);
+    public Task SetData(Dictionary<string, object> data) => Storage.SetData(_id, data);
 
-        public async Task SetData(Dictionary<string, object> data) => await Storage.SetData(_id, data);
+    public Task<Dictionary<string, object>> GetData() => Storage.GetData(_id);
 
-        public async Task<Dictionary<string, object>> GetData() => await Storage.GetData(_id);
-
-        public async Task Clear() => await Storage.Clear(_id);
-
-    }
-
+    public Task Clear() => Storage.Clear(_id);
 }

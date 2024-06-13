@@ -1,21 +1,18 @@
-﻿namespace TelegramBotExtension.FiniteStateMachine
+﻿namespace TelegramBotExtension.FiniteStateMachine;
+
+internal interface IState
 {
-    internal interface IState
-    {
-        Task SetState(string? state);
+    Task SetState(string? state);
 
-        Task<string?> GetState();
+    Task<string?> GetState();
 
-        Task UpdateData(string key, object value);
+    Task UpdateData(string key, object value);
 
-        Task UpdateData(Dictionary<string, object> data);
+    Task UpdateData(Dictionary<string, object> data);
 
-        Task SetData(Dictionary<string, object> data);
+    Task SetData(Dictionary<string, object> data);
 
-        Task<Dictionary<string, object>> GetData();
+    Task<Dictionary<string, object>> GetData();
 
-        Task Clear();
-
-    }
-
+    Task Clear();
 }

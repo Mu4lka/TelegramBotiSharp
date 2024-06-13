@@ -1,19 +1,16 @@
 ﻿using Telegram.Bot.Types.ReplyMarkups;
 
-namespace TelegramBotExtension.UI
+namespace TelegramBotExtension.UI;
+
+public class UI
 {
-    public class UI
+    public static InlineKeyboardMarkup GetInlineButtons(string[] buttons)
     {
-        public static InlineKeyboardMarkup GetInlineButtons(string[] buttons)
-        {
-            List<List<InlineKeyboardButton>> inlineKeyboardButtons = new List<List<InlineKeyboardButton>>();
+        var inlineKeyboardButtons = new List<List<InlineKeyboardButton>>();
 
-            foreach (var button in buttons)
-                inlineKeyboardButtons.Add(new List<InlineKeyboardButton> { new InlineKeyboardButton(button) { CallbackData = button } });
+        foreach (var button in buttons)
+            inlineKeyboardButtons.Add([new(button) { CallbackData = button }]);
 
-            return new InlineKeyboardMarkup(inlineKeyboardButtons);
-        }
-
+        return new InlineKeyboardMarkup(inlineKeyboardButtons);
     }
-
 }

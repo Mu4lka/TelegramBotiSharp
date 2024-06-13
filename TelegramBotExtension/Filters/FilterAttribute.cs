@@ -1,19 +1,11 @@
 ﻿using TelegramBotExtension.Types.Base;
 
-namespace TelegramBotExtension.Filters
+namespace TelegramBotExtension.Filters;
+
+[AttributeUsage(AttributeTargets.Method)]
+public abstract class FilterAttribute(string? data) : Attribute
 {
-    [AttributeUsage(AttributeTargets.Method)]
-    public abstract class FilterAttribute : Attribute
-    {
-        public string? Data { get; set; }
+    public string? Data { get; set; } = data;
 
-        public FilterAttribute(string? data)
-        {
-            Data = data;
-        }
-
-        public abstract Task<bool> Call(Context context);
-
-    }
-
+    public abstract Task<bool> Call(Context context);
 }

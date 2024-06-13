@@ -2,21 +2,13 @@
 using Telegram.Bot;
 using TelegramBotExtension.Types.Base;
 
-namespace TelegramBotExtension.Types
+namespace TelegramBotExtension.Types;
+
+public class MessageContext(
+    ITelegramBotClient bot,
+    CancellationToken cancellationToken,
+    Message message
+    ) : Context(bot, cancellationToken, message.From!.Id, message.Text!)
 {
-    public class MessageContext : Context
-    {
-        public Message Message { get; set; }
-
-        public MessageContext(
-            ITelegramBotClient bot,
-            CancellationToken cancellationToken,
-            Message message
-            ) : base(bot, cancellationToken, message.From!.Id, message.Text!)
-        {
-            Message = message;
-        }
-
-    }
-
+    public Message Message { get; set; } = message;
 }
