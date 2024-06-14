@@ -6,9 +6,9 @@ namespace TelegramBotExtension.Filters;
 
 public class Command(string command) : FilterAttribute(command)
 {
-    private bool IsValidCommand(Context context)
+    private bool IsValidCommand(BaseContext baseContext)
     {
-        if (context is not MessageContext messageContext)
+        if (baseContext is not MessageContext messageContext)
             return false;
 
         var message = messageContext.Message;
@@ -22,8 +22,8 @@ public class Command(string command) : FilterAttribute(command)
         return message.Text != null && message.Text == "/" + Data;
     }
 
-    public override Task<bool> Call(Context context)
+    public override Task<bool> Call(BaseContext baseContext)
     {
-        return Task.FromResult(IsValidCommand(context));
+        return Task.FromResult(IsValidCommand(baseContext));
     }
 }

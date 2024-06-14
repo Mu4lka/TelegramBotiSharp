@@ -8,9 +8,9 @@ namespace TelegramBotExtension.Examples;
 
 internal class CastomFilter() : FilterAttribute(null)
 {
-    public override async Task<bool> Call(Context context)
+    public override async Task<bool> Call(BaseContext baseContext)
     {
-        if (context is not MessageContext messageContext)
+        if (baseContext is not MessageContext messageContext)
             return false;
         
         if (messageContext.Message.From == null)
@@ -18,7 +18,7 @@ internal class CastomFilter() : FilterAttribute(null)
 
         User user = messageContext.Message.From;
 
-        await context.Bot.SendTextMessageAsync(user.Id, "CastomFilter");
+        await messageContext.Bot.SendTextMessageAsync(user.Id, "CastomFilter");
         return true;
     }
 }

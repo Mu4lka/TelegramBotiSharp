@@ -7,5 +7,5 @@ public abstract class FilterAttribute(string? data) : Attribute
 {
     public string? Data { get; set; } = data;
 
-    public abstract Task<bool> Call(Context context);
+    public abstract Task<bool> Call(BaseContext baseContext);
 }

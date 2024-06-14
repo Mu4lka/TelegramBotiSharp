@@ -72,7 +72,7 @@ internal class RegistrationHandlers
 
 internal class Program
 {
-    private const string _token = "TOKEN";
+    private const string _token = "YOUR_TOKEN";
     private static readonly Dispatcher _dispatcher = new();
 
     public static async Task Main()
