@@ -40,6 +40,6 @@ namespace TelegramBotExtension.Handling
         event Error? OnError;
         event Unknown? OnUnknown;
 
-        Task<bool> TryHandle(ITelegramBotClient botClient, Update update, CancellationToken cancellationToken);
+        Task<bool> TryHandleRouterAsync(ITelegramBotClient botClient, Update update, CancellationToken cancellationToken);
     }
 }

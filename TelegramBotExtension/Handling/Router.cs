@@ -27,7 +27,17 @@ public class Router : IRouter
     public event IRouter.Error? OnError;
     public event IRouter.Unknown? OnUnknown;
 
-    public virtual async Task<bool> TryHandle(ITelegramBotClient botClient, Update update, CancellationToken cancellationToken)
+    public async Task<bool> TryHandleErrorAsync(ITelegramBotClient botClient, Exception exception, CancellationToken cancellationToken)
+    {
+        if (OnError == null)
+            return false;
+        return await TryHandleDelegates(
+            OnError.GetInvocationList(),
+            new ErrorContext(botClient, cancellationToken, exception)
+            );
+    }
+
+    public virtual async Task<bool> TryHandleRouterAsync(ITelegramBotClient botClient, Update update, CancellationToken cancellationToken)
     {
         Delegate[]? delegates;
         BaseContext? context;
@@ -96,11 +106,10 @@ public class Router : IRouter
                 break;
             default: return false;
         }
-        await HandleDelegates(delegates, context);
-        return true;
+        return await TryHandleDelegates(delegates, context);
     }
 
-    private static async Task HandleDelegates(Delegate[] delegates, BaseContext context)
+    private static async Task<bool> TryHandleDelegates(Delegate[] delegates, BaseContext context)
     {
         foreach (var del in delegates)
         {
@@ -108,9 +117,10 @@ public class Router : IRouter
             {
                 if (del.DynamicInvoke(context) is Task task)
                     await task;
-                return;
+                return true;
             }
         }
+        return false;
     }
 
     private static async Task<bool> CheckFilters(MethodInfo method, BaseContext context)
