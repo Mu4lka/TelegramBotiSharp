@@ -1,6 +1,6 @@
 ﻿using Telegram.Bot;
-using TelegramBotExtension.Handling;
 using TelegramBotExtension.Filters;
+using TelegramBotExtension.Handling;
 using TelegramBotExtension.Types.Contexts;
 
 namespace TelegramBotExtension.Examples;
@@ -17,14 +17,14 @@ internal class RegistrationHandlers
 
     static RegistrationHandlers()
     {
-        Router.OnMessage += HandleCommandStart;
-        Router.OnMessage += HandleGettingName;
-        Router.OnCallbackQuery += ProcessIfAdult;
-        Router.OnCallbackQuery += ProcessIfUnderage;
+        Router.OnMessage += HandleCommandStartAsync;
+        Router.OnMessage += HandleGettingNameAsync;
+        Router.OnCallbackQuery += ProcessIfAdultAsync;
+        Router.OnCallbackQuery += ProcessIfUnderageAsync;
     }
 
     [Command("start")]
-    public static async Task HandleCommandStart(MessageContext context)
+    public static async Task HandleCommandStartAsync(MessageContext context)
     {
         await context.Bot.SendTextMessageAsync(
             context.Message.From!.Id,
@@ -34,7 +34,7 @@ internal class RegistrationHandlers
     }
 
     [StateFilter(nameof(State.reg))]
-    public static async Task HandleGettingName(MessageContext context)
+    public static async Task HandleGettingNameAsync(MessageContext context)
     {
         await context.State.UpdateData("name", context.Message.Text!);
         await context.Bot.SendTextMessageAsync(
@@ -47,7 +47,7 @@ internal class RegistrationHandlers
 
     [StateFilter(nameof(State.isAdult))]
     [DataFilter("Yes")]
-    public static async Task ProcessIfAdult(CallbackQueryContext context)
+    public static async Task ProcessIfAdultAsync(CallbackQueryContext context)
     {
         var data = await context.State.GetData();
         await context.Bot.SendTextMessageAsync(
@@ -59,7 +59,7 @@ internal class RegistrationHandlers
 
     [StateFilter(nameof(State.isAdult))]
     [DataFilter("No")]
-    public static async Task ProcessIfUnderage(CallbackQueryContext context)
+    public static async Task ProcessIfUnderageAsync(CallbackQueryContext context)
     {
         var data = await context.State.GetData();
         await context.Bot.SendTextMessageAsync(

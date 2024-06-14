@@ -31,7 +31,7 @@ public class Router : IRouter
     {
         if (OnError == null)
             return false;
-        return await TryHandleDelegates(
+        return await TryHandleDelegatesAsync(
             OnError.GetInvocationList(),
             new ErrorContext(botClient, cancellationToken, exception)
             );
@@ -106,14 +106,14 @@ public class Router : IRouter
                 break;
             default: return false;
         }
-        return await TryHandleDelegates(delegates, context);
+        return await TryHandleDelegatesAsync(delegates, context);
     }
 
-    private static async Task<bool> TryHandleDelegates(Delegate[] delegates, BaseContext context)
+    private static async Task<bool> TryHandleDelegatesAsync(Delegate[] delegates, BaseContext context)
     {
         foreach (var del in delegates)
         {
-            if (await CheckFilters(del.Method, context))
+            if (await CheckFiltersAsync(del.Method, context))
             {
                 if (del.DynamicInvoke(context) is Task task)
                     await task;
@@ -123,7 +123,7 @@ public class Router : IRouter
         return false;
     }
 
-    private static async Task<bool> CheckFilters(MethodInfo method, BaseContext context)
+    private static async Task<bool> CheckFiltersAsync(MethodInfo method, BaseContext context)
     {
         var filters = method.GetCustomAttributes(false).OfType<FilterAttribute>();
 
