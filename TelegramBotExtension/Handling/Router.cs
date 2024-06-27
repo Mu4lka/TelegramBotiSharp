@@ -39,8 +39,8 @@ public class Router : IRouter
 
     public virtual async Task<bool> TryHandleRouterAsync(ITelegramBotClient botClient, Update update, CancellationToken cancellationToken)
     {
-        Delegate[]? delegates;
-        BaseContext? context;
+        Delegate[] delegates;
+        BaseContext context;
 
         switch (update.Type)
         {

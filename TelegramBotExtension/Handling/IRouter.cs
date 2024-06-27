@@ -23,22 +23,22 @@ namespace TelegramBotExtension.Handling
         delegate Task Error(ErrorContext context);
         delegate Task Unknown(UpdateContext context);
 
-        event Message? OnMessage;
-        event EditedMessage? OnEditedMessage;
-        event ChannelPost? OnChannelPost;
-        event EditedChannelPost? OnEditedChannelPost;
-        event InlineQuery? OnInlineQuery;
-        event ChosenInlineResult? OnChosenInlineResult;
-        event CallbackQuery? OnCallbackQuery;
-        event ShippingQuery? OnShippingQuery;
-        event PreCheckoutQuery? OnPreCheckoutQuery;
-        event Poll? OnPoll;
-        event PollAnswer? OnPollAnswer;
-        event MyChatMember? OnMyChatMember;
-        event ChatMember? OnChatMember;
-        event ChatJoinRequest? OnChatJoinRequest;
-        event Error? OnError;
-        event Unknown? OnUnknown;
+        event Message OnMessage;
+        event EditedMessage OnEditedMessage;
+        event ChannelPost OnChannelPost;
+        event EditedChannelPost OnEditedChannelPost;
+        event InlineQuery OnInlineQuery;
+        event ChosenInlineResult OnChosenInlineResult;
+        event CallbackQuery OnCallbackQuery;
+        event ShippingQuery OnShippingQuery;
+        event PreCheckoutQuery OnPreCheckoutQuery;
+        event Poll OnPoll;
+        event PollAnswer OnPollAnswer;
+        event MyChatMember OnMyChatMember;
+        event ChatMember OnChatMember;
+        event ChatJoinRequest OnChatJoinRequest;
+        event Error OnError;
+        event Unknown OnUnknown;
 
         Task<bool> TryHandleRouterAsync(ITelegramBotClient botClient, Update update, CancellationToken cancellationToken);
     }
