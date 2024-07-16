@@ -1,17 +1,16 @@
 ﻿using Telegram.Bot.Types.Enums;
-using TelegramBotExtension.Types.Contexts;
-using TelegramBotExtension.Types.Contexts.Base;
+using TelegramBotExtension.Types;
 
 namespace TelegramBotExtension.Filters;
 
 public class Command(string command) : FilterAttribute(command)
 {
-    private bool IsValidCommand(BaseContext baseContext)
+    private bool IsValidCommand(TelegramContext baseContext)
     {
-        if (baseContext is not MessageContext messageContext)
-            return false;
+        var message = baseContext.Update.Message;
 
-        var message = messageContext.Message;
+        if (message == null)
+            return false;
 
         if (message.Entities == null || message.Entities.Length == 0)
             return false;
@@ -22,8 +21,6 @@ public class Command(string command) : FilterAttribute(command)
         return message.Text != null && message.Text == "/" + Data;
     }
 
-    public override Task<bool> Call(BaseContext baseContext)
-    {
-        return Task.FromResult(IsValidCommand(baseContext));
-    }
+    public override Task<bool> Call(TelegramContext context)
+        => Task.FromResult(IsValidCommand(context));
 }
