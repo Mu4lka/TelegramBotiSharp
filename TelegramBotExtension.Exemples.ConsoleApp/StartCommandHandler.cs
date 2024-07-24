@@ -7,7 +7,7 @@ namespace TelegramBotExtension.Exemples.ConsoleApp;
 
 internal class StartCommandHandler : MessageHandler
 {
-    [Command("start")]
+    [CommandFilter("start")]
     public override async Task HandleUpdateAsync(TelegramContext context)
     {
         await context.BotClient.SendTextMessageAsync(context.UserId, "Hello, World!");

@@ -3,7 +3,7 @@ using TelegramBotExtension.Types;
 
 namespace TelegramBotExtension.Filters;
 
-public class Command(string command) : FilterAttribute(command)
+public class CommandFilter(string command) : FilterAttribute(command)
 {
     private bool IsValidCommand(TelegramContext baseContext)
     {
