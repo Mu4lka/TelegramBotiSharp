@@ -26,7 +26,7 @@ internal class StartCommandHandler : MessageHandler
     }
 }
 ```
-В данном примере обработчик StartCommandHandler будет обрабатываться а том случае, если пользователь отправил сообщение
+В данном примере обработчик StartCommandHandler будет обрабатываться а том случае, если пользователь отправил сообщение-команду "/start"
 
 **Основные обработчки:**
 * CallbackQueryHandler - триггер на Telegram.Bot.Types.CallbackQuery
@@ -34,3 +34,7 @@ internal class StartCommandHandler : MessageHandler
 
 * Фильтры
 В примере выше был использован фильтр-aттрибут CommandFilter("start"), обработчик сработает в том случае если пользователь отправит сообщение-команду "/start"
+**Основные фильтры:**
+* CommandFilter - Cообщение является командой
+* StateFilter - Состояние пользователя
+* DataFilter - Данные отправленные пользователем
