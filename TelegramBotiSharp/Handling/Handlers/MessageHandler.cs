@@ -5,9 +5,10 @@ using TelegramBotExtension.Types;
 
 namespace TelegramBotExtension.Handling;
 
-[Handler(UpdateType.Message)]
 public abstract class MessageHandler : IUpdateTypeHandler
 {
+    public UpdateType UpdateType => UpdateType.Message;
+
     public abstract Task HandleUpdateAsync(TelegramContext context);
 
     public TelegramContext GetContext(ITelegramBotClient botClient, Update update)

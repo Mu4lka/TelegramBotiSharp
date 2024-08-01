@@ -24,14 +24,15 @@ public class UpdateHandler(
 
     public async Task HandleUpdateAsync(ITelegramBotClient botClient, Update update, CancellationToken cancellationToken)
     {
-        var handlers = GetHandlersByUpdateType(update.Type);
+        var handlers = _handlers.Where(
+            handler => handler.UpdateType == update.Type);
 
         foreach (var handler in handlers)
         {
             var methodInfo = handler.GetType().GetMethod(nameof(handler.HandleUpdateAsync));
             var context = handler.GetContext(botClient, update);
 
-            if (await CheckFiltersAsync(methodInfo, context))
+            if (await CheckFiltersAsync(methodInfo!, context))
             {
                 await handler.HandleUpdateAsync(context);
                 return;
@@ -62,11 +63,5 @@ public class UpdateHandler(
                 return false;
         }
         return true;
-    }
-
-    private IEnumerable<IUpdateTypeHandler> GetHandlersByUpdateType(UpdateType updateType)
-    {
-        return _handlers.Where(
-            handler => handler.GetType().GetCustomAttribute<HandlerAttribute>().UpdateType == updateType);
     }
 }
