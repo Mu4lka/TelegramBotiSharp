@@ -10,7 +10,7 @@ using TelegramBotExtension.Types;
 
 namespace TelegramBotExtension.Handling;
 
-public class BotService(
+public class UpdateHandler(
     IEnumerable<IUpdateTypeHandler> _handlers,
     ITelegramBotClient _botClient,
     IStorage _storage) : IUpdateHandler
@@ -66,14 +66,7 @@ public class BotService(
 
     private IEnumerable<IUpdateTypeHandler> GetHandlersByUpdateType(UpdateType updateType)
     {
-        return _handlers.Where(handler => Check(handler, updateType));
-    }
-
-    private bool Check(IUpdateTypeHandler handler, UpdateType updateType)
-    {
-        var type = handler.GetType();
-        var attribute = type.GetCustomAttribute<HandlerAttribute>();
-        var result = attribute.UpdateType == updateType;
-        return result;
+        return _handlers.Where(
+            handler => handler.GetType().GetCustomAttribute<HandlerAttribute>().UpdateType == updateType);
     }
 }

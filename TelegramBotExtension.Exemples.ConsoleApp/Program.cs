@@ -16,13 +16,13 @@ var builder = Host.CreateDefaultBuilder()
         services.AddSingleton<ITelegramBotClient, TelegramBotClient>(x => new TelegramBotClient(
                 token: token));
         services
-            .AddSingleton<BotService>()
+            .AddSingleton<UpdateHandler>()
             .AddTransient<IStorage, MemoryStorage>()
             .AddTransient<IUpdateTypeHandler, StartCommandHandler>();
 
         var botService = services
             .BuildServiceProvider()
-            .GetRequiredService<BotService>();
+            .GetRequiredService<UpdateHandler>();
 
         botService.StartBot();
     });
