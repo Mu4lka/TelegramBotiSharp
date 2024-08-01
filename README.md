@@ -1,80 +1,29 @@
-# TelegramBotExtension
-**TelegramBotExtension** is a library (extension) over [Telegram.Bot](https://github.com/TelegramBots/Telegram.Bot) on **.NET 8.0**, for the convenience of writing telegram bots in **C#**.
+# TelegramBotiSharp
 
-## Advantages
+**TelegramBotiSharp**- абстакция над библиотекой [Telegram.Bot](https://github.com/TelegramBots/Telegram.Bot) на **.NET 8.0**.
+Использовав данную небольшую библиотеку, она обеспечит вам удобство написания более сложных телеграм-ботов на **C#**
 
-* Easy creation of handlers. Here is an example of a handler that processes the /start command:
+## Преимущество
+1. Не надо проверять тип обновления - Вам больше не нужно проверять конкретные типы обновления, так как существуют классы-обработчики конкретного типа обновления
+2. Айди пользователя теперь в одном месте - Вам больше не нужно получать Айди пользователя из типа обновления, теперь он находится в классе TelegramContext
+3. Машина состояния - Вы сможете сохранять состояние пользователя и обрабатывать его
+4. Кастомизация - Вы сможете самостоятельно делать свои фильтры
+   
+## Быстрый старт
+Клонируйте данный репозиторий
+Токен поместите в appsettings.json
+Запустите
 
+## Краткая документация
+* Создание класса обработчика
 ```C#
-        [Command("start")]
-        public static async Task HandleCommandStart(MessageContext context)
-        {
-            await context.Bot.SendTextMessageAsync(
-                context.Message.From!.Id,
-                "Registration. Enter your name..."
-                );
-        }
-```
-These handlers (methods) must subscribe to the corresponding events that are defined in the Router class or in the Dispatcher:
-```C#
-    internal class HandlersExemples
+internal class StartCommandHandler : MessageHandler
+{
+    [CommandFilter("start")]
+    public override async Task HandleUpdateAsync(TelegramContext context)
     {
-        public static Router Router = new();
-
-        static RegistrationHandlers()
-        {
-            Router.OnMessage += HandleCommandStart;
-        }
-
-        [Command("start")]
-        public static async Task HandleCommandStart(MessageContext context)
-        {
-            await context.Bot.SendTextMessageAsync(
-                context.Message.From!.Id,
-                "Registration. Enter your name..."
-                );
-        }
-
+        await context.BotClient.SendTextMessageAsync(context.UserId, "Hello, World!");
     }
-
-    internal class Program
-    {
-        private const string _token = "YOUR_TOKEN";
-        private static readonly Dispatcher _dispatcher = new();
-
-        public static async Task Main()
-        {
-            var botClient = new TelegramBotClient(_token);
-            _dispatcher.Routers.Add(RegistrationHandlers.Router);
-            await botClient.ReceiveAsync(_dispatcher);
-        }
-
-    }
+}
 ```
-Detailed examples in the [file](https://github.com/Mu4lka/TelegramBotExtension/blob/master/TelegramBotExtension.Examples/HandlersExamples.cs).
 
-* Handlers can have filters (attributes), if all filters are passed, then this handler will be called
-* The state machine is implemented, and you can also override its storage
-* You can create custom filters that inherit from the FilterAttribute class:
-
-```C#
-    internal class CastomFilter : FilterAttribute
-    {
-        public CastomFilter() : base(null) { }
-
-        public override async Task<bool> Call(Context context)
-        {
-            if (context is not MessageContext messageContext)
-                return false;
-            
-            if (messageContext.Message.From == null)
-                return false;
-
-            User user = messageContext.Message.From;
-
-            await context.Bot.SendTextMessageAsync(user.Id, "CastomFilter");
-            return true;
-        }
-    }
-```
-#### Not all types of telegram objects are supported yet, this project will continue to be supported and improved
