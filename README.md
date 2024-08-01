@@ -43,7 +43,7 @@ internal class StartCommandHandler : MessageHandler
 Фильтры могут комбинироваться
 
 ```C#
-internal class SempleHandler : CallbackQueryHandler
+internal class ExempleHandler : CallbackQueryHandler
 {
     [StateFilter(nameof(State.Proccess))]
     [DataFilter("Далее")]
@@ -54,5 +54,3 @@ internal class SempleHandler : CallbackQueryHandler
 }
 ```
 В примере выше, данный обработчик сработает в том случае, если состояние пользователя будет State.Proccess и он нажал на кнопку InlineKeyboardButton в которой содержится данные "Далее"
-
-* Внедрение зависимостей
