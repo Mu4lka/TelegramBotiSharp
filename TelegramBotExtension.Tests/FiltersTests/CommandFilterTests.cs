@@ -1,43 +1,42 @@
-using Telegram.Bot.Types.Enums;
-using Telegram.Bot.Types;
-using TelegramBotExtension.Filters;
-using TelegramBotExtension.Types.Contexts;
 using Moq;
+using Telegram.Bot.Types;
+using Telegram.Bot.Types.Enums;
+using TelegramBotExtension.Filters;
+using TelegramBotExtension.Types;
 using Telegram.Bot;
 
 namespace TelegramBotExtension.Tests.FiltersTests;
 
 [TestFixture]
-public class CommandTests
+public class CommandFilterTests
 {
     private Message _message;
     private string _commandText;
-    private Command _command;
+    private CommandFilter _commandFilter;
     private Mock<ITelegramBotClient> _mockBotClient;
+    private TelegramContext _context;
 
     [SetUp]
     public void SetUp()
     {
         // Arrange
         _commandText = "test";
-        _command = new Command(_commandText);
+        _commandFilter = new CommandFilter(_commandText);
         _mockBotClient = new Mock<ITelegramBotClient>();
         _message = new Message
         {
             Text = "/" + _commandText,
-            Entities =[ new() { Type = MessageEntityType.BotCommand }],
+            Entities = [new MessageEntity { Type = MessageEntityType.BotCommand }],
             From = new User { Id = 1 }
         };
+        _context = new TelegramContext(_mockBotClient.Object, new Update { Message = _message }, 1, string.Empty);
     }
 
     [Test]
     public async Task Call_WhenCommandMatches_ReturnsTrue()
     {
-        // Arrange
-        var context = new MessageContext(_mockBotClient.Object, CancellationToken.None, _message);
-
         // Act
-        var result = await _command.Call(context);
+        var result = await _commandFilter.Call(_context);
 
         // Assert
         Assert.That(result, Is.True);
@@ -48,10 +47,10 @@ public class CommandTests
     {
         // Arrange
         _message.Text = "/wrong";
-        var context = new MessageContext(_mockBotClient.Object, CancellationToken.None, _message);
+        _context = new TelegramContext(_mockBotClient.Object, new Update { Message = _message }, 1, string.Empty);
 
         // Act
-        var result = await _command.Call(context);
+        var result = await _commandFilter.Call(_context);
 
         // Assert
         Assert.That(result, Is.False);
@@ -62,10 +61,10 @@ public class CommandTests
     {
         // Arrange
         _message.Entities = null;
-        var context = new MessageContext(_mockBotClient.Object, CancellationToken.None, _message);
+        _context = new TelegramContext(_mockBotClient.Object, new Update { Message = _message }, 1, string.Empty);
 
         // Act
-        var result = await _command.Call(context);
+        var result = await _commandFilter.Call(_context);
 
         // Assert
         Assert.That(result, Is.False);
@@ -75,11 +74,11 @@ public class CommandTests
     public async Task Call_WhenEntityTypeDoesNotMatch_ReturnsFalse()
     {
         // Arrange
-        _message.Entities = [new MessageEntity { Type = MessageEntityType.Cashtag }];
-        var context = new MessageContext(_mockBotClient.Object, CancellationToken.None, _message);
+        _message.Entities = [ new MessageEntity { Type = MessageEntityType.Cashtag } ];
+        _context = new TelegramContext(_mockBotClient.Object, new Update { Message = _message }, 1, string.Empty);
 
         // Act
-        var result = await _command.Call(context);
+        var result = await _commandFilter.Call(_context);
 
         // Assert
         Assert.That(result, Is.False);
@@ -89,11 +88,11 @@ public class CommandTests
     public async Task Call_WhenNullMessage_ReturnsFalse()
     {
         // Arrange
-        var nullMessage = new Message { From = new User { Id = 123456789 } };
-        var context = new MessageContext(_mockBotClient.Object, CancellationToken.None, nullMessage);
+        var nullMessageUpdate = new Update { Message = null };
+        _context = new TelegramContext(_mockBotClient.Object, nullMessageUpdate, 1, string.Empty);
 
         // Act
-        var result = await _command.Call(context);
+        var result = await _commandFilter.Call(_context);
 
         // Assert
         Assert.That(result, Is.False);

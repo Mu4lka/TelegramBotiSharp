@@ -1,42 +1,35 @@
-﻿using Moq;
-using Telegram.Bot;
+﻿using NUnit.Framework;
+using Moq;
 using TelegramBotExtension.Filters;
-using TelegramBotExtension.Types.Contexts.Base;
+using TelegramBotExtension.Types;
+using Telegram.Bot;
+using Telegram.Bot.Types;
 
 namespace TelegramBotExtension.Tests.FiltersTests;
-
-public class TestContext : Context
-{
-    public TestContext(
-        ITelegramBotClient bot,
-        CancellationToken cancellationToken,
-        long id,
-        string data) : base(bot, cancellationToken, id, data) { }
-}
 
 [TestFixture]
 public class DataFilterTests
 {
     private string _data;
-    private TestContext _context;
+    private DataFilter _dataFilter;
     private Mock<ITelegramBotClient> _mockBotClient;
+    private TelegramContext _context;
 
     [SetUp]
-    public void Setup()
+    public void SetUp()
     {
-        _data = "data";
+        // Arrange
+        _data = "testData";
+        _dataFilter = new DataFilter(_data);
         _mockBotClient = new Mock<ITelegramBotClient>();
-        _context = new TestContext(_mockBotClient.Object, CancellationToken.None, 1, _data);
+        _context = new TelegramContext(_mockBotClient.Object, new Update(), 1, _data);
     }
 
     [Test]
     public async Task Call_WhenDataMatches_ReturnsTrue()
     {
-        // Arrange
-        var dataFilter = new DataFilter(_data);
-
         // Act
-        var result = await dataFilter.Call(_context);
+        var result = await _dataFilter.Call(_context);
 
         // Assert
         Assert.That(result, Is.True);
@@ -46,54 +39,54 @@ public class DataFilterTests
     public async Task Call_WhenDataDoesNotMatch_ReturnsFalse()
     {
         // Arrange
-        _context.Data = "different";
-        var dataFilter = new DataFilter(_data);
+        var differentContext = new TelegramContext(_mockBotClient.Object, new Update(), 1, "differentData");
 
         // Act
-        var result = await dataFilter.Call(_context);
+        var result = await _dataFilter.Call(differentContext);
 
         // Assert
         Assert.That(result, Is.False);
     }
 
     [Test]
-    public async Task Call_WhenContextDataIsNull_ReturnsFalse()
+    public async Task Call_WhenDataIsNullAndContextDataIsNull_ReturnsTrue()
     {
         // Arrange
-        _context.Data = null!;
-        var dataFilter = new DataFilter(_data);
+        var nullDataFilter = new DataFilter(null);
+        var nullDataContext = new TelegramContext(_mockBotClient.Object, new Update(), 1, null);
 
         // Act
-        var result = await dataFilter.Call(_context);
-
-        // Assert
-        Assert.That(result, Is.False);
-    }
-
-    [Test]
-    public async Task Call_WhenFilterDataIsNull_ReturnsFalse()
-    {
-        // Arrange
-        var dataFilter = new DataFilter(null!);
-
-        // Act
-        var result = await dataFilter.Call(_context);
-
-        // Assert
-        Assert.That(result, Is.False);
-    }
-
-    [Test]
-    public async Task Call_WhenBothDataAreNull_ReturnsTrue()
-    {
-        // Arrange
-        _context.Data = null!;
-        var dataFilter = new DataFilter(null!);
-
-        // Act
-        var result = await dataFilter.Call(_context);
+        var result = await nullDataFilter.Call(nullDataContext);
 
         // Assert
         Assert.That(result, Is.True);
+    }
+
+    [Test]
+    public async Task Call_WhenDataIsNullAndContextDataIsNotNull_ReturnsFalse()
+    {
+        // Arrange
+        var nullDataFilter = new DataFilter(null);
+        var notNullDataContext = new TelegramContext(_mockBotClient.Object, new Update(), 1, "notNullData");
+
+        // Act
+        var result = await nullDataFilter.Call(notNullDataContext);
+
+        // Assert
+        Assert.That(result, Is.False);
+    }
+
+    [Test]
+    public async Task Call_WhenDataIsNotNullAndContextDataIsNull_ReturnsFalse()
+    {
+        // Arrange
+        var notNullDataFilter = new DataFilter("notNullData");
+        var nullDataContext = new TelegramContext(_mockBotClient.Object, new Update(), 1, null);
+
+        // Act
+        var result = await notNullDataFilter.Call(nullDataContext);
+
+        // Assert
+        Assert.That(result, Is.False);
     }
 }
