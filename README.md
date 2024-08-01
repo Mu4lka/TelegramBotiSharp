@@ -34,7 +34,23 @@ internal class StartCommandHandler : MessageHandler
 
 * Фильтры
 В примере выше был использован фильтр-aттрибут CommandFilter("start"), обработчик сработает в том случае если пользователь отправит сообщение-команду "/start"
+
 **Основные фильтры:**
 * CommandFilter - Cообщение является командой
 * StateFilter - Состояние пользователя
 * DataFilter - Данные отправленные пользователем
+
+Фильтры могут комбинироваться
+
+```C#
+internal class SempleHandler : CallbackQueryHandler
+{
+    [StateFilter(nameof(State.Proccess))]
+    [DataFilter("Далее")]
+    public override async Task HandleUpdateAsync(TelegramContext context)
+    {
+        //code...
+    }
+}
+```
+В примере выше, данных обработчик сработает в том случае, если состояние пользователя будет State.Proccess и он нажал на кнопку InlineKeyboardButton в которой содержится данные "Далее"
