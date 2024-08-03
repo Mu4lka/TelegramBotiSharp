@@ -59,7 +59,7 @@ public class UpdateHandler(
 
         foreach (FilterAttribute filter in filters)
         {
-            if (!await filter.Call(context))
+            if (!await filter.CallAsync(context))
                 return false;
         }
         return true;
