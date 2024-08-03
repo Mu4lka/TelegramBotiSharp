@@ -7,5 +7,5 @@ public abstract class FilterAttribute(string? data) : Attribute
 {
     public string? Data { get; } = data;
 
-    public abstract Task<bool> Call(TelegramContext context);
+    public abstract Task<bool> CallAsync(TelegramContext context);
 }

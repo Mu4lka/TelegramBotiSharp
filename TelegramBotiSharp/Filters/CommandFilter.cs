@@ -21,6 +21,6 @@ public class CommandFilter(string command) : FilterAttribute(command)
         return message.Text != null && message.Text == "/" + Data;
     }
 
-    public override Task<bool> Call(TelegramContext context)
+    public override Task<bool> CallAsync(TelegramContext context)
         => Task.FromResult(IsValidCommand(context));
 }

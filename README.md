@@ -1,6 +1,6 @@
 # TelegramBotiSharp
 
-**TelegramBotiSharp**- абстакция над библиотекой [Telegram.Bot](https://github.com/TelegramBots/Telegram.Bot) на **.NET 8.0**.
+**TelegramBotiSharp** - абстакция над библиотекой [Telegram.Bot](https://github.com/TelegramBots/Telegram.Bot).
 Использовав данную небольшую библиотеку, она обеспечит вам удобство написания более сложных телеграм-ботов на **C#**
 
 ## Преимущество
@@ -12,10 +12,20 @@
 ## Быстрый старт
 1. Клонируйте данный репозиторий
 2. Токен поместите в appsettings.json
-3. Запустите
+3. Файл appsettings.json поместите со своим токеном в ../TelegramBotiSharp.Exemples\bin\Debug\net8.0
+4. Запустите
+
+### Файл Program.cs
+В файле Program.cs используется Dependency Injection, вы можете отказаться от этого, переписав на следующий код в данном файле:
+```C#
+await new UpdateHandler(
+    [new StartCommandHandler()],
+    new TelegramBotClient("TOKEN"),
+    new MemoryStorage()).StartBot();
+```
 
 ## Краткая документация
-* Создание класса обработчика
+### Создание класса обработчика
 ```C#
 internal class StartCommandHandler : MessageHandler
 {
@@ -32,7 +42,7 @@ internal class StartCommandHandler : MessageHandler
 * CallbackQueryHandler - триггер на Telegram.Bot.Types.CallbackQuery
 * MessageHandler - триггер на Telegram.Bot.Types.Message
 
-* Фильтры
+### Фильтры
 В примере выше был использован фильтр-aттрибут CommandFilter("start"), обработчик сработает в том случае если пользователь отправит сообщение-команду "/start"
 
 **Основные фильтры:**
@@ -54,3 +64,15 @@ internal class ExempleHandler : CallbackQueryHandler
 }
 ```
 В примере выше, данный обработчик сработает в том случае, если состояние пользователя будет State.Proccess и он нажал на кнопку InlineKeyboardButton в которой содержится данные "Далее"
+### Кастомные фильтры
+Чтобы сделать кастомный фильтр, создайте класс, наследованный от FilterAttribute, и реализуйте его. Пример кастомного фильттра:
+```C#
+internal class ExempleFilter(string? data) : FilterAttribute(data)
+{
+    public override async Task<bool> CallAsync(TelegramContext context)
+    {
+        //code...
+        return true;
+    }
+}
+```

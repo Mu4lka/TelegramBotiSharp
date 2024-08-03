@@ -5,7 +5,6 @@ using Microsoft.Extensions.Configuration;
 using System.Reflection;
 using TelegramBotExtension.Handling;
 using TelegramBotExtension.Exemples.ConsoleApp;
-using Telegram.Bot.Polling;
 using TelegramBotExtension.FiniteStateMachine;
 
 var builder = Host.CreateDefaultBuilder()
@@ -20,17 +19,17 @@ var builder = Host.CreateDefaultBuilder()
             .AddTransient<IStorage, MemoryStorage>()
             .AddTransient<IUpdateTypeHandler, StartCommandHandler>();
 
-        var botService = services
+        var updateHandler = services
             .BuildServiceProvider()
             .GetRequiredService<UpdateHandler>();
 
-        botService.StartBot();
+        updateHandler.StartBot();
     });
 
 builder.ConfigureAppConfiguration(conf =>
 {
     conf.AddJsonFile("appsettings.json", optional: false, true)
-        .AddUserSecrets(Assembly.GetExecutingAssembly(), true)
+        .AddUserSecrets(Assembly.GetCallingAssembly(), true)
         .AddEnvironmentVariables();
 });
 

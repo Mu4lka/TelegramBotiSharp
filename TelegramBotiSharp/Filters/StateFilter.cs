@@ -4,6 +4,6 @@ namespace TelegramBotExtension.Filters;
 
 public class StateFilter(string? state) : FilterAttribute(state)
 {
-    public override async Task<bool> Call(TelegramContext context)
+    public override async Task<bool> CallAsync(TelegramContext context)
         => await context.State.GetState() == Data;
 }
