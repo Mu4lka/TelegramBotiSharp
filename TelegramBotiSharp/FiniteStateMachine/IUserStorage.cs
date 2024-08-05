@@ -8,5 +8,6 @@ public interface IUserStorage
     Task UpdateDataAsync(Dictionary<string, object> data);
     Task SetDataAsync(Dictionary<string, object> data);
     Task<Dictionary<string, object>> GetDataAsync();
+    Task<TData?> GetDataAsync<TData>(string key);
     Task ClearAsync();
 }

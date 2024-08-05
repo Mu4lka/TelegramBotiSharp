@@ -6,7 +6,7 @@ namespace TelegramBotExtension.Types;
 
 public class TelegramContext(
     ITelegramBotClient botClient,
-    IStorage storage,
+    IStorage<long> storage,
     Update update,
     long userId,
     string data

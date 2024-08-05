@@ -1,12 +1,13 @@
 ﻿namespace TelegramBotExtension.FiniteStateMachine;
 
-public interface IStorage
+public interface IStorage<TId>
 {
-    Task SetStateAsync(long id, string? state);
-    Task<string?> GetStateAsync(long id);
-    Task UpdateDataAsync(long id, string key, object value);
-    Task UpdateDataAsync(long id, Dictionary<string, object> data);
-    Task SetDataAsync(long id, Dictionary<string, object> data);
-    Task<Dictionary<string, object>> GetDataAsync(long id);
-    Task ClearAsync(long id);
+    Task SetStateAsync(TId id, string? state);
+    Task<string?> GetStateAsync(TId id);
+    Task UpdateDataAsync(TId id, string key, object value);
+    Task UpdateDataAsync(TId id, Dictionary<string, object> data);
+    Task SetDataAsync(TId id, Dictionary<string, object> data);
+    Task<Dictionary<string, object>> GetDataAsync(TId id);
+    Task<TData?> GetDataAsync<TData>(TId id, string key);
+    Task ClearAsync(TId id);
 }

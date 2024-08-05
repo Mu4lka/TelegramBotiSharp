@@ -2,7 +2,7 @@
 
 namespace TelegramBotExtension.FiniteStateMachine;
 
-public class MemoryStorage : IStorage
+public class MemoryStorage : IStorage<long>
 {
     private readonly ConcurrentDictionary<long, string?> _states = [];
     private readonly ConcurrentDictionary<long, ConcurrentDictionary<string, object>> _data = [];
@@ -52,6 +52,20 @@ public class MemoryStorage : IStorage
             return Task.FromResult(data.ToDictionary());
 
         return Task.FromResult(new Dictionary<string, object>());
+    }
+
+    public Task<TData?> GetDataAsync<TData>(long id, string key)
+    {
+        if (!_data.TryGetValue(id, out var dictData))
+            return Task.FromResult<TData?>(default);
+
+        if (!dictData.TryGetValue(key, out object? obj))
+            return Task.FromResult<TData?>(default);
+
+        if (obj is TData data)
+            return Task.FromResult(data);
+
+        return Task.FromResult<TData?>(default);
     }
 
     public Task ClearAsync(long id)

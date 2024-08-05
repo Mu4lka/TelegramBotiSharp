@@ -13,7 +13,7 @@ namespace TelegramBotExtension.Handling;
 public class UpdateHandler(
     IEnumerable<IUpdateTypeHandler> _handlers,
     ITelegramBotClient _botClient,
-    IStorage _storage) : IUpdateHandler
+    IStorage<long> _storage) : IUpdateHandler
 {
     public Task StartBot()
     {

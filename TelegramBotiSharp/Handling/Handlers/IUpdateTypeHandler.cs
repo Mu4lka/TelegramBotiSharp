@@ -10,5 +10,5 @@ public interface IUpdateTypeHandler
 {
     UpdateType UpdateType { get; }
     Task HandleUpdateAsync(TelegramContext context);
-    TelegramContext GetContext(ITelegramBotClient botClient, IStorage storage, Update update);
+    TelegramContext GetContext(ITelegramBotClient botClient, IStorage<long> storage, Update update);
 }

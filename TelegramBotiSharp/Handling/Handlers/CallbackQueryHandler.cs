@@ -12,7 +12,7 @@ public abstract class CallbackQueryHandler : IUpdateTypeHandler
 
     public abstract Task HandleUpdateAsync(TelegramContext context);
 
-    public TelegramContext GetContext(ITelegramBotClient botClient, IStorage storage, Update update)
+    public TelegramContext GetContext(ITelegramBotClient botClient, IStorage<long> storage, Update update)
         => new(
             botClient,
             storage,

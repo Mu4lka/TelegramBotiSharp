@@ -1,6 +1,6 @@
 ﻿namespace TelegramBotExtension.FiniteStateMachine;
 
-public class UserStorage(long id, IStorage _storage) : IUserStorage
+public class UserStorage(long id, IStorage<long> _storage) : IUserStorage
 {
     private readonly long _id = id;
 
@@ -17,4 +17,6 @@ public class UserStorage(long id, IStorage _storage) : IUserStorage
     public Task<Dictionary<string, object>> GetDataAsync() => _storage.GetDataAsync(_id);
 
     public Task ClearAsync() => _storage.ClearAsync(_id);
+
+    public Task<TData?> GetDataAsync<TData>(string key) => _storage.GetDataAsync<TData>(id, key);
 }
