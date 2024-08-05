@@ -2,11 +2,11 @@
 
 public interface IStorage
 {
-    Task SetState(long id, string? state);
-    Task<string?> GetState(long id);
-    Task UpdateData(long id, string key, object value);
-    Task UpdateData(long id, Dictionary<string, object> data);
-    Task SetData(long id, Dictionary<string, object> data);
-    Task<Dictionary<string, object>> GetData(long id);
-    Task Clear(long id);
+    Task SetStateAsync(long id, string? state);
+    Task<string?> GetStateAsync(long id);
+    Task UpdateDataAsync(long id, string key, object value);
+    Task UpdateDataAsync(long id, Dictionary<string, object> data);
+    Task SetDataAsync(long id, Dictionary<string, object> data);
+    Task<Dictionary<string, object>> GetDataAsync(long id);
+    Task ClearAsync(long id);
 }
