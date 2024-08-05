@@ -17,7 +17,6 @@ public class UpdateHandler(
 {
     public Task StartBot()
     {
-        State.Storage = _storage;
         _botClient.StartReceiving(this);
         return Task.CompletedTask;
     }
@@ -30,7 +29,7 @@ public class UpdateHandler(
         foreach (var handler in handlers)
         {
             var methodInfo = handler.GetType().GetMethod(nameof(handler.HandleUpdateAsync));
-            var context = handler.GetContext(botClient, update);
+            var context = handler.GetContext(botClient, _storage, update);
 
             if (await CheckFiltersAsync(methodInfo!, context))
             {

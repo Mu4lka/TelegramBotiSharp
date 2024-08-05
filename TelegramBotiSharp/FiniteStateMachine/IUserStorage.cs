@@ -1,6 +1,6 @@
 ﻿namespace TelegramBotExtension.FiniteStateMachine;
 
-internal interface IState
+public interface IUserStorage
 {
     Task SetState(string? state);
     Task<string?> GetState();

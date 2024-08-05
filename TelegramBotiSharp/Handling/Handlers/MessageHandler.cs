@@ -2,6 +2,7 @@
 using Telegram.Bot;
 using Telegram.Bot.Types.Enums;
 using TelegramBotExtension.Types;
+using TelegramBotExtension.FiniteStateMachine;
 
 namespace TelegramBotExtension.Handling;
 
@@ -11,6 +12,12 @@ public abstract class MessageHandler : IUpdateTypeHandler
 
     public abstract Task HandleUpdateAsync(TelegramContext context);
 
-    public TelegramContext GetContext(ITelegramBotClient botClient, Update update)
-        => new(botClient, update, update.Message!.From!.Id, update.Message.Text!);
+    public TelegramContext GetContext(ITelegramBotClient botClient, IStorage storage, Update update)
+        => new(
+            botClient,
+            storage,
+            update,
+            update.Message!.From!.Id,
+            update.Message.Text!
+            );
 }
