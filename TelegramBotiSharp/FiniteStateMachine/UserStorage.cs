@@ -16,5 +16,5 @@ public class UserStorage(long _id, IStorage<long> _storage) : IUserStorage
 
     public Task ClearAsync() => _storage.ClearAsync(_id);
 
-    public Task<TData?> GetDataAsync<TData>(string key) => _storage.GetDataAsync<TData>(id, key);
+    public Task<TData?> GetDataAsync<TData>(string key) => _storage.GetDataAsync<TData>(_id, key);
 }

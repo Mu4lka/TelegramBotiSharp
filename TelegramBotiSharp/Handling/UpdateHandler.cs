@@ -21,7 +21,7 @@ public class UpdateHandler(
         return Task.CompletedTask;
     }
 
-    public async Task HandleUpdateAsync(ITelegramBotClient botClient, Update update, CancellationToken cancellationToken)
+    public virtual async Task HandleUpdateAsync(ITelegramBotClient botClient, Update update, CancellationToken cancellationToken)
     {
         var handlers = _handlers.Where(
             handler => handler.UpdateType == update.Type);
@@ -39,7 +39,7 @@ public class UpdateHandler(
         }
     }
 
-    public Task HandlePollingErrorAsync(ITelegramBotClient botClient, Exception exception, CancellationToken cancellationToken)
+    public virtual Task HandlePollingErrorAsync(ITelegramBotClient botClient, Exception exception, CancellationToken cancellationToken)
     {
         var ErrorMessage = exception switch
         {
