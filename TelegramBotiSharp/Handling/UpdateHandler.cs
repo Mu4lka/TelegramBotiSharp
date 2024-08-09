@@ -13,16 +13,15 @@ namespace TelegramBotExtension.Handling;
 public class UpdateHandler(
     IEnumerable<IUpdateTypeHandler> _handlers,
     ITelegramBotClient _botClient,
-    IStorage _storage) : IUpdateHandler
+    IStorage<long> _storage) : IUpdateHandler
 {
     public Task StartBot()
     {
-        State.Storage = _storage;
         _botClient.StartReceiving(this);
         return Task.CompletedTask;
     }
 
-    public async Task HandleUpdateAsync(ITelegramBotClient botClient, Update update, CancellationToken cancellationToken)
+    public virtual async Task HandleUpdateAsync(ITelegramBotClient botClient, Update update, CancellationToken cancellationToken)
     {
         var handlers = _handlers.Where(
             handler => handler.UpdateType == update.Type);
@@ -30,7 +29,7 @@ public class UpdateHandler(
         foreach (var handler in handlers)
         {
             var methodInfo = handler.GetType().GetMethod(nameof(handler.HandleUpdateAsync));
-            var context = handler.GetContext(botClient, update);
+            var context = handler.GetContext(botClient, _storage, update);
 
             if (await CheckFiltersAsync(methodInfo!, context))
             {
@@ -40,7 +39,7 @@ public class UpdateHandler(
         }
     }
 
-    public Task HandlePollingErrorAsync(ITelegramBotClient botClient, Exception exception, CancellationToken cancellationToken)
+    public virtual Task HandlePollingErrorAsync(ITelegramBotClient botClient, Exception exception, CancellationToken cancellationToken)
     {
         var ErrorMessage = exception switch
         {

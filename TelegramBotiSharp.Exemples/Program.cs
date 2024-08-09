@@ -16,7 +16,7 @@ var builder = Host.CreateDefaultBuilder()
                 token: token));
         services
             .AddSingleton<UpdateHandler>()
-            .AddTransient<IStorage, MemoryStorage>()
+            .AddTransient<IStorage<long>, MemoryStorage>()
             .AddTransient<IUpdateTypeHandler, StartCommandHandler>();
 
         var updateHandler = services
