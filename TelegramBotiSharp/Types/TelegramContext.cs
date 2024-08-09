@@ -8,13 +8,13 @@ public class TelegramContext(
     ITelegramBotClient botClient,
     IStorage<long> storage,
     Update update,
-    long userId,
+    User user,
     string data
 )
 {
     public ITelegramBotClient BotClient { get; set; } = botClient;
     public Update Update { get; set; } = update;
-    public IUserStorage UserStorage { get; set; } = new UserStorage(userId, storage);
-    public long UserId { get; set; } = userId;
+    public IUserStorage UserStorage { get; set; } = new UserStorage(user.Id, storage);
+    public User User { get; set; } = user;
     public string Data { get; set; } = data;
 }

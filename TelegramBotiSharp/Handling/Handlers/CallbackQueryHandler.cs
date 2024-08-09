@@ -17,7 +17,7 @@ public abstract class CallbackQueryHandler : IUpdateTypeHandler
             botClient,
             storage,
             update,
-            update.CallbackQuery!.From.Id,
+            update.CallbackQuery!.From,
             update.CallbackQuery.Data!
             );
 }

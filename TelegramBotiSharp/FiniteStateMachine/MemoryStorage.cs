@@ -57,15 +57,15 @@ public class MemoryStorage : IStorage<long>
     public Task<TData?> GetDataAsync<TData>(long id, string key)
     {
         if (!_data.TryGetValue(id, out var dictData))
-            return Task.FromResult<TData?>(default);
+            return Task.FromResult(default(TData?));
 
         if (!dictData.TryGetValue(key, out object? obj))
-            return Task.FromResult<TData?>(default);
+            return Task.FromResult(default(TData?));
 
         if (obj is TData data)
-            return Task.FromResult(data);
+            return Task.FromResult<TData?>(data);
 
-        return Task.FromResult<TData?>(default);
+        return Task.FromResult(default(TData?));
     }
 
     public Task ClearAsync(long id)

@@ -17,7 +17,7 @@ public abstract class MessageHandler : IUpdateTypeHandler
             botClient,
             storage,
             update,
-            update.Message!.From!.Id,
+            update.Message!.From!,
             update.Message.Text!
             );
 }

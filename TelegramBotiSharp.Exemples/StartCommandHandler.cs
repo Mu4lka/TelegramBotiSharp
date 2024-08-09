@@ -11,6 +11,6 @@ internal class StartCommandHandler : MessageHandler
     [CommandFilter("start")]
     public override async Task HandleUpdateAsync(TelegramContext context)
     {
-        await context.BotClient.SendTextMessageAsync(context.UserId, "Hello, World!");
+        await context.BotClient.SendTextMessageAsync(context.User.Id, "Hello, World!");
     }
 }
