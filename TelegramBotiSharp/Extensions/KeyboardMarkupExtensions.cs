@@ -2,7 +2,7 @@
 
 namespace TelegramBotExtension.UI;
 
-public static class KeyboardMarkupExtension
+public static class KeyboardMarkupExtensions
 {
     public static InlineKeyboardMarkup ToInlineKeyboardMarkup<T1, T2>(
         this IEnumerable<(T1, T2)> buttons,

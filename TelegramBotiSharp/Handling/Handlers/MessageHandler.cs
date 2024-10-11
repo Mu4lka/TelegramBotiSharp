@@ -10,7 +10,7 @@ public abstract class MessageHandler : IUpdateTypeHandler
 {
     public UpdateType UpdateType => UpdateType.Message;
 
-    public abstract Task HandleUpdateAsync(TelegramContext context);
+    public abstract Task HandleAsync(TelegramContext context);
 
     public TelegramContext GetContext(ITelegramBotClient botClient, IStorage<long> storage, Update update)
         => new(

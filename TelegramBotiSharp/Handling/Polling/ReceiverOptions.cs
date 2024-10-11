@@ -26,4 +26,5 @@ public sealed class ReceiverOptions
             _limit = value;
         }
     }
+    public bool ThrowPendingUpdates { get;  set; }
 }

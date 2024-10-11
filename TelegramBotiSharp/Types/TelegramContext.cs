@@ -9,12 +9,11 @@ public class TelegramContext(
     IStorage<long> storage,
     Update update,
     User user,
-    string data
-)
+    string data)
 {
-    public ITelegramBotClient BotClient { get; set; } = botClient;
-    public Update Update { get; set; } = update;
-    public IUserStorage UserStorage { get; set; } = new UserStorage(user.Id, storage);
-    public User User { get; set; } = user;
-    public string Data { get; set; } = data;
+    public ITelegramBotClient BotClient { get; } = botClient;
+    public Update Update { get; } = update;
+    public IUserStorage UserStorage { get; } = new UserStorage<long>(user.Id, storage);
+    public User User { get; } = user;
+    public string Data { get; } = data;
 }

@@ -1,6 +1,6 @@
 ﻿namespace TelegramBotiSharp.Storages;
 
-public class UserStorage(long _id, IStorage<long> _storage) : IUserStorage
+public class UserStorage<Tid>(Tid _id, IStorage<Tid> _storage) : IUserStorage
 {
     public Task SetStateAsync(string? state) => _storage.SetStateAsync(_id, state);
 

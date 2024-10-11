@@ -11,7 +11,7 @@ public class ParallelUpdateReceiver : IUpdateReceiver
 
     public ParallelUpdateReceiver(
         ITelegramBotClient botclient,
-        ReceiverOptions receiverOptions = null!)
+        ReceiverOptions receiverOptions = default!)
     {
         _botClient = botclient ?? throw new ArgumentNullException(nameof(botclient));
         _receiverOptions = receiverOptions ?? new ReceiverOptions();
@@ -24,21 +24,40 @@ public class ParallelUpdateReceiver : IUpdateReceiver
         while (!cancellationToken.IsCancellationRequested)
         {
             var timeout = (int)_botClient.Timeout.TotalSeconds;
-
-            Update[] updates = await _botClient.GetUpdatesAsync(
-                offset: _receiverOptions.Offset,
-                limit: _receiverOptions.Limit,
-                timeout: timeout,
-                allowedUpdates: _receiverOptions.AllowedUpdates,
-                cancellationToken: cancellationToken
+            Update[]? updates = null;
+            try
+            {
+                updates = await _botClient.GetUpdatesAsync(
+                    offset: _receiverOptions.Offset,
+                    limit: _receiverOptions.Limit,
+                    timeout: timeout,
+                    allowedUpdates: _receiverOptions.AllowedUpdates,
+                    cancellationToken: cancellationToken
                 );
+            }
+            catch
+            {
+                throw;
+            }
+
+            if (updates is null)
+                continue;
 
             var tasks = updates.Select(
                 update => updateHandler.HandleUpdateAsync(
                     _botClient,
                     update,
                     cancellationToken));
-            await Task.WhenAll(tasks);
+
+            var task = Task.WhenAll(tasks);
+            try
+            {
+                await task;
+            }
+            catch
+            {
+                await updateHandler.HandlePollingErrorAsync(_botClient, task.Exception!, cancellationToken);
+            }
         }
     }
 }

@@ -9,6 +9,6 @@ namespace TelegramBotExtension.Handling;
 public interface IUpdateTypeHandler
 {
     UpdateType UpdateType { get; }
-    Task HandleUpdateAsync(TelegramContext context);
+    Task HandleAsync(TelegramContext context);
     TelegramContext GetContext(ITelegramBotClient botClient, IStorage<long> storage, Update update);
 }
