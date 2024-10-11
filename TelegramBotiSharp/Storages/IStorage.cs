@@ -1,4 +1,4 @@
-﻿namespace TelegramBotExtension.FiniteStateMachine;
+﻿namespace TelegramBotiSharp.Storages;
 
 public interface IStorage<TId>
 {

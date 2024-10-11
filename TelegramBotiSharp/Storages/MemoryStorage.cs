@@ -1,6 +1,6 @@
 ﻿using System.Collections.Concurrent;
 
-namespace TelegramBotExtension.FiniteStateMachine;
+namespace TelegramBotiSharp.Storages;
 
 public class MemoryStorage : IStorage<long>
 {
@@ -63,7 +63,7 @@ public class MemoryStorage : IStorage<long>
             return Task.FromResult(default(TData?));
 
         if (obj is TData data)
-            return Task.FromResult<TData?>(data);
+            return Task.FromResult(data)!;
 
         return Task.FromResult(default(TData?));
     }

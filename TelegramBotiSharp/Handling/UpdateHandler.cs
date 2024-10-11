@@ -3,10 +3,11 @@ using Telegram.Bot.Exceptions;
 using Telegram.Bot.Polling;
 using Telegram.Bot.Types;
 using System.Reflection;
-using TelegramBotExtension.FiniteStateMachine;
 using Telegram.Bot.Types.Enums;
 using TelegramBotExtension.Filters;
 using TelegramBotExtension.Types;
+using TelegramBotiSharp.Storages;
+using TelegramBotiSharp.Handling.Polling;
 
 namespace TelegramBotExtension.Handling;
 
@@ -15,13 +16,16 @@ public class UpdateHandler(
     ITelegramBotClient _botClient,
     IStorage<long> _storage) : IUpdateHandler
 {
-    public Task StartBot()
+    public Task StartBotAsync(
+        IUpdateReceiver updateReceiver = default!,
+        TelegramBotiSharp.Handling.Polling.ReceiverOptions options = default!,
+        CancellationToken token = default!)
     {
         _botClient.StartReceiving(this);
         return Task.CompletedTask;
     }
 
-    public virtual async Task HandleUpdateAsync(ITelegramBotClient botClient, Update update, CancellationToken cancellationToken)
+    public async Task HandleUpdateAsync(ITelegramBotClient botClient, Update update, CancellationToken cancellationToken)
     {
         var handlers = _handlers.Where(
             handler => handler.UpdateType == update.Type);
@@ -37,9 +41,21 @@ public class UpdateHandler(
                 return;
             }
         }
+
+        static async Task<bool> CheckFiltersAsync(MethodInfo method, TelegramContext context)
+        {
+            var filters = method.GetCustomAttributes(false).OfType<FilterAttribute>();
+
+            foreach (FilterAttribute filter in filters)
+            {
+                if (!await filter.CallAsync(context))
+                    return false;
+            }
+            return true;
+        }
     }
 
-    public virtual Task HandlePollingErrorAsync(ITelegramBotClient botClient, Exception exception, CancellationToken cancellationToken)
+    public Task HandlePollingErrorAsync(ITelegramBotClient botClient, Exception exception, CancellationToken cancellationToken)
     {
         var ErrorMessage = exception switch
         {
@@ -50,17 +66,5 @@ public class UpdateHandler(
 
         Console.WriteLine(ErrorMessage);
         throw exception;
-    }
-
-    private static async Task<bool> CheckFiltersAsync(MethodInfo method, TelegramContext context)
-    {
-        var filters = method.GetCustomAttributes(false).OfType<FilterAttribute>();
-
-        foreach (FilterAttribute filter in filters)
-        {
-            if (!await filter.CallAsync(context))
-                return false;
-        }
-        return true;
     }
 }

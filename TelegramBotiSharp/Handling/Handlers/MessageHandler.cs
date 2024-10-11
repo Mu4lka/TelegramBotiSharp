@@ -2,7 +2,7 @@
 using Telegram.Bot;
 using Telegram.Bot.Types.Enums;
 using TelegramBotExtension.Types;
-using TelegramBotExtension.FiniteStateMachine;
+using TelegramBotiSharp.Storages;
 
 namespace TelegramBotExtension.Handling;
 

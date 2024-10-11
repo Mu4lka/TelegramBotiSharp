@@ -1,4 +1,4 @@
-﻿namespace TelegramBotExtension.FiniteStateMachine;
+﻿namespace TelegramBotiSharp.Storages;
 
 public class UserStorage(long _id, IStorage<long> _storage) : IUserStorage
 {

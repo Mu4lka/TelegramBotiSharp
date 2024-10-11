@@ -1,6 +1,6 @@
 ﻿using Telegram.Bot.Types;
 using Telegram.Bot;
-using TelegramBotExtension.FiniteStateMachine;
+using TelegramBotiSharp.Storages;
 
 namespace TelegramBotExtension.Types;
 

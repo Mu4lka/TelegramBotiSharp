@@ -1,8 +1,8 @@
 ﻿using Telegram.Bot;
 using Telegram.Bot.Types;
 using Telegram.Bot.Types.Enums;
-using TelegramBotExtension.FiniteStateMachine;
 using TelegramBotExtension.Types;
+using TelegramBotiSharp.Storages;
 
 namespace TelegramBotExtension.Handling;
 
