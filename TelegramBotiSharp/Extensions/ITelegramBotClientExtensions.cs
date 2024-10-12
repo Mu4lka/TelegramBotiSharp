@@ -24,7 +24,7 @@ public static class ITelegramBotClientExtensions
                 Limit = options.Limit,
                 Offset = options.Offset,
                 AllowedUpdates = options.AllowedUpdates,
-                ThrowPendingUpdates = options.ThrowPendingUpdates
+                ThrowPendingUpdates = options.DropPendingUpdates
             });
 
         await receiver.ReceiveAsync(updateHandler, token);

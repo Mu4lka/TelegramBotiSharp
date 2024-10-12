@@ -4,9 +4,9 @@ namespace TelegramBotiSharp.Handling.Polling;
 
 public sealed class ReceiverOptions
 {
-    private int _limit = 100;
+    private int _limit;
 
-    public int Offset { get; set; } = 0;
+    public int Offset { get; set; }
 
     public UpdateType[]? AllowedUpdates { get; set; }
 
@@ -26,5 +26,8 @@ public sealed class ReceiverOptions
             _limit = value;
         }
     }
-    public bool ThrowPendingUpdates { get;  set; }
+    public bool DropPendingUpdates { get; set; }
+
+    public static ReceiverOptions Default()
+        => new() { Limit = 100, Offset = 0 };
 }

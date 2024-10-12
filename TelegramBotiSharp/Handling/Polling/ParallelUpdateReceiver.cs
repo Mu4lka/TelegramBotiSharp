@@ -14,12 +14,19 @@ public class ParallelUpdateReceiver : IUpdateReceiver
         ReceiverOptions receiverOptions = default!)
     {
         _botClient = botclient ?? throw new ArgumentNullException(nameof(botclient));
-        _receiverOptions = receiverOptions ?? new ReceiverOptions();
+        _receiverOptions = receiverOptions ?? ReceiverOptions.Default();
     }
 
     public async Task ReceiveAsync(IUpdateHandler updateHandler, CancellationToken cancellationToken = default)
     {
         ArgumentNullException.ThrowIfNull(updateHandler);
+        var offset = _receiverOptions.Offset;
+
+        if (_receiverOptions.DropPendingUpdates is true)
+        {
+            var updates = await _botClient.GetUpdatesAsync(-1, 1, 0, [], cancellationToken);
+            offset = updates.Length == 0 ? 0 : updates[^1].Id + 1;
+        }
 
         while (!cancellationToken.IsCancellationRequested)
         {
@@ -28,7 +35,7 @@ public class ParallelUpdateReceiver : IUpdateReceiver
             try
             {
                 updates = await _botClient.GetUpdatesAsync(
-                    offset: _receiverOptions.Offset,
+                    offset: offset,
                     limit: _receiverOptions.Limit,
                     timeout: timeout,
                     allowedUpdates: _receiverOptions.AllowedUpdates,
@@ -40,7 +47,7 @@ public class ParallelUpdateReceiver : IUpdateReceiver
                 throw;
             }
 
-            if (updates is null)
+            if (!updates.Any())
                 continue;
 
             var tasks = updates.Select(
@@ -58,6 +65,7 @@ public class ParallelUpdateReceiver : IUpdateReceiver
             {
                 await updateHandler.HandlePollingErrorAsync(_botClient, task.Exception!, cancellationToken);
             }
+            offset = updates[^1].Id + 1;
         }
     }
 }
