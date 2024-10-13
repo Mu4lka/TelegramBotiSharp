@@ -1,6 +1,6 @@
-﻿using TelegramBotExtension.Types;
+﻿using TelegramBotiSharp.Types;
 
-namespace TelegramBotExtension.Filters;
+namespace TelegramBotiSharp.Filters;
 
 [AttributeUsage(AttributeTargets.Method)]
 public abstract class FilterAttribute(string? data) : Attribute

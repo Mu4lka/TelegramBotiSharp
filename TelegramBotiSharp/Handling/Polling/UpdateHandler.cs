@@ -1,10 +1,8 @@
-﻿using System.Reflection;
-using Telegram.Bot;
+﻿using Telegram.Bot;
 using Telegram.Bot.Polling;
 using Telegram.Bot.Types;
-using TelegramBotExtension.Filters;
-using TelegramBotExtension.Handling;
-using TelegramBotExtension.Types;
+using TelegramBotiSharp.Filters;
+using TelegramBotiSharp.Handling.Handlers;
 using TelegramBotiSharp.Storages;
 
 namespace TelegramBotiSharp.Handling.Polling;
@@ -53,7 +51,7 @@ public class UpdateHandler : IUpdateHandler
 
     public async Task HandlePollingErrorAsync(ITelegramBotClient botClient, Exception exception, CancellationToken cancellationToken)
     {
-        if(_pollingErrorHandler is null)
+        if (_pollingErrorHandler is null)
             throw exception;
 
         await _pollingErrorHandler.Invoke(botClient, exception, cancellationToken);

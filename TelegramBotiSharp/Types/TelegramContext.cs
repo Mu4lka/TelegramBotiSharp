@@ -2,7 +2,7 @@
 using Telegram.Bot;
 using TelegramBotiSharp.Storages;
 
-namespace TelegramBotExtension.Types;
+namespace TelegramBotiSharp.Types;
 
 public class TelegramContext(
     ITelegramBotClient botClient,

@@ -1,10 +1,10 @@
 ﻿using Telegram.Bot;
 using Telegram.Bot.Types;
 using Telegram.Bot.Types.Enums;
-using TelegramBotExtension.Types;
 using TelegramBotiSharp.Storages;
+using TelegramBotiSharp.Types;
 
-namespace TelegramBotExtension.Handling;
+namespace TelegramBotiSharp.Handling.Handlers;
 
 public interface IUpdateTypeHandler
 {

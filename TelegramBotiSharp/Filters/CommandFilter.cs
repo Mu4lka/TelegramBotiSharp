@@ -1,7 +1,7 @@
 ﻿using Telegram.Bot.Types.Enums;
-using TelegramBotExtension.Types;
+using TelegramBotiSharp.Types;
 
-namespace TelegramBotExtension.Filters;
+namespace TelegramBotiSharp.Filters;
 
 public class CommandFilter(string command) : FilterAttribute(command)
 {

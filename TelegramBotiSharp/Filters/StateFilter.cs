@@ -1,6 +1,6 @@
-﻿using TelegramBotExtension.Types;
+﻿using TelegramBotiSharp.Types;
 
-namespace TelegramBotExtension.Filters;
+namespace TelegramBotiSharp.Filters;
 
 public class StateFilter(string? state) : FilterAttribute(state)
 {
