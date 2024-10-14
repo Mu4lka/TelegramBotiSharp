@@ -6,19 +6,19 @@ using TelegramBotiSharp.Types;
 namespace TelegramBotiSharp.Handling.Handlers;
 
 /// <summary>
-/// <see cref="Update.CallbackQuery"/> handler
+/// <see cref="Update.ChatJoinRequest"/> handler
 /// </summary>
-public abstract class CallbackQueryHandler : IUpdateTypeHandler
+public abstract class ChatJoinRequestHandler : IUpdateTypeHandler
 {
-    public UpdateType UpdateType => UpdateType.CallbackQuery;
+    public UpdateType UpdateType => UpdateType.ChatJoinRequest;
 
     public TelegramContext GetContext(TelegramContextBuilder builder)
         => new(
             builder.BotClient,
             builder.Storage,
             builder.Update,
-            builder.Update.CallbackQuery!.From,
-            builder.Update.CallbackQuery!.Data,
+            builder.Update.ChatJoinRequest!.From,
+            builder.Update.ChatJoinRequest!.Bio,
             builder.Token);
 
     public abstract Task HandleAsync(TelegramContext context);

@@ -2,22 +2,27 @@
 using Telegram.Bot.Polling;
 using Telegram.Bot.Types;
 using TelegramBotiSharp.Filters;
-using TelegramBotiSharp.Handling.Handlers;
+using TelegramBotiSharp.Handling.Handlers.Abstrаctions;
 using TelegramBotiSharp.Storages;
+using TelegramBotiSharp.Types;
 
 namespace TelegramBotiSharp.Handling.Polling;
 
+/// <summary>
+/// Provides an implementation of <see cref="IUpdateHandler"/> that handles specific update types
+/// </summary>
 public class UpdateHandler : IUpdateHandler
 {
     private IEnumerable<IUpdateTypeHandler> _handlers;
     private Func<ITelegramBotClient, Exception, CancellationToken, Task> _pollingErrorHandler;
-    private IStorage<long> _storage;
+    private IUsersStorage<long> _storage;
 
     public UpdateHandler(
         IEnumerable<IUpdateTypeHandler> handlers,
-        IStorage<long> storage,
+        IUsersStorage<long> storage = default!,
         Func<ITelegramBotClient, Exception, CancellationToken, Task> pollingErrorHandler = default!)
     {
+        _storage = storage ??= new MemoryUsersStorage();
         _handlers = handlers;
         _storage = storage;
         _pollingErrorHandler = pollingErrorHandler;
@@ -29,7 +34,7 @@ public class UpdateHandler : IUpdateHandler
 
         if (!handlers.Any()) return;
 
-        var context = handlers.First().GetContext(botClient, _storage, update);
+        var context = handlers.First().GetContext(new TelegramContextBuilder(botClient, _storage, update, cancellationToken));
 
         foreach (var handler in handlers)
         {

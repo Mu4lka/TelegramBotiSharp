@@ -4,6 +4,10 @@ using Telegram.Bot.Types;
 
 namespace TelegramBotiSharp.Handling.Polling;
 
+/// <summary>
+/// An implementation of <see cref="IUpdateReceiver"/> that requests new updates
+/// and processes them in parallel in a non-deterministic manner.
+/// </summary>
 public class ParallelUpdateReceiver : IUpdateReceiver
 {
     private readonly ITelegramBotClient _botClient;

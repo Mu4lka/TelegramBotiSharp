@@ -2,24 +2,27 @@
 
 namespace TelegramBotiSharp.Storages;
 
-public class MemoryStorage : IStorage<long>
+/// <summary>
+/// Implementation of <see cref="IUsersStorage{TUserId}"/>, where data is stored in service memory
+/// </summary>
+public class MemoryUsersStorage<TUserId> : IUsersStorage<TUserId> where TUserId : notnull
 {
-    private readonly ConcurrentDictionary<long, string?> _states = [];
-    private readonly ConcurrentDictionary<long, ConcurrentDictionary<string, object>> _data = [];
+    private readonly ConcurrentDictionary<TUserId, string?> _states = [];
+    private readonly ConcurrentDictionary<TUserId, ConcurrentDictionary<string, object>> _data = [];
 
-    public Task SetStateAsync(long id, string? state)
+    public Task SetStateAsync(TUserId id, string? state, CancellationToken token = default!)
     {
         _states[id] = state;
         return Task.CompletedTask;
     }
 
-    public Task<string?> GetStateAsync(long id)
+    public Task<string?> GetStateAsync(TUserId id, CancellationToken token = default)
     {
         _states.TryGetValue(id, out var state);
         return Task.FromResult(state);
     }
 
-    public Task UpdateDataAsync(long id, string key, object value)
+    public Task UpdateDataAsync(TUserId id, string key, object value, CancellationToken token = default)
     {
         return Task.Run(() =>
         {
@@ -31,22 +34,22 @@ public class MemoryStorage : IStorage<long>
                     existingData[key] = value;
                     return existingData;
                 });
-        });
+        }, token);
     }
 
-    public async Task UpdateDataAsync(long id, Dictionary<string, object> data)
+    public async Task UpdateDataAsync(TUserId id, Dictionary<string, object> data, CancellationToken token = default)
     {
         foreach (var item in data)
-            await UpdateDataAsync(id, item.Key, item.Value);
+            await UpdateDataAsync(id, item.Key, item.Value, token);
     }
 
-    public Task SetDataAsync(long id, Dictionary<string, object> data)
+    public Task SetDataAsync(TUserId id, Dictionary<string, object> data, CancellationToken token = default)
     {
         _data[id] = new ConcurrentDictionary<string, object>(data);
         return Task.CompletedTask;
     }
 
-    public Task<Dictionary<string, object>> GetDataAsync(long id)
+    public Task<Dictionary<string, object>> GetDataAsync(TUserId id, CancellationToken token = default)
     {
         if (_data.TryGetValue(id, out var data))
             return Task.FromResult(data.ToDictionary());
@@ -54,7 +57,7 @@ public class MemoryStorage : IStorage<long>
         return Task.FromResult(new Dictionary<string, object>());
     }
 
-    public Task<TData?> GetDataAsync<TData>(long id, string key)
+    public Task<TData?> GetDataAsync<TData>(TUserId id, string key, CancellationToken token = default)
     {
         if (!_data.TryGetValue(id, out var dictData))
             return Task.FromResult(default(TData?));
@@ -68,7 +71,7 @@ public class MemoryStorage : IStorage<long>
         return Task.FromResult(default(TData?));
     }
 
-    public Task ClearAsync(long id)
+    public Task ClearAsync(TUserId id, CancellationToken token = default)
     {
         _states.TryRemove(id, out var _);
         _data.TryRemove(id, out var _);

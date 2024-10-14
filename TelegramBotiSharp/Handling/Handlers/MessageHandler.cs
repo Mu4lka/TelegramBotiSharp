@@ -1,23 +1,25 @@
 ﻿using Telegram.Bot.Types;
-using Telegram.Bot;
 using Telegram.Bot.Types.Enums;
-using TelegramBotiSharp.Storages;
+using TelegramBotiSharp.Handling.Handlers.Abstrаctions;
 using TelegramBotiSharp.Types;
 
 namespace TelegramBotiSharp.Handling.Handlers;
 
+/// <summary>
+/// <see cref="Update.Message"/> handler
+/// </summary>
 public abstract class MessageHandler : IUpdateTypeHandler
 {
     public UpdateType UpdateType => UpdateType.Message;
 
-    public abstract Task HandleAsync(TelegramContext context);
-
-    public TelegramContext GetContext(ITelegramBotClient botClient, IStorage<long> storage, Update update)
+    public TelegramContext GetContext(TelegramContextBuilder builder)
         => new(
-            botClient,
-            storage,
-            update,
-            update.Message!.From!,
-            update.Message.Text!
-            );
+            builder.BotClient,
+            builder.Storage,
+            builder.Update,
+            builder.Update.Message!.From!,
+            builder.Update.Message.Text!,
+            builder.Token);
+
+    public abstract Task HandleAsync(TelegramContext context);
 }
