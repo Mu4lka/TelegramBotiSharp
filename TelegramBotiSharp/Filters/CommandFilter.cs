@@ -14,7 +14,7 @@ public class CommandFilter(string command) : FilterAttribute(command)
 {
     private static string? BotUserName;
 
-    public async override Task<bool> CallAsync(TelegramContext context)
+    public async override Task<bool> CallAsync(TelegramContext context, CancellationToken token = default)
     {
         var message = context.Update.Message;
 

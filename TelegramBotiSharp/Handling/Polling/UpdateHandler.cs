@@ -22,7 +22,7 @@ public class UpdateHandler : IUpdateHandler
         IUsersStorage<long> storage = default!,
         Func<ITelegramBotClient, Exception, CancellationToken, Task> pollingErrorHandler = default!)
     {
-        _storage = storage ??= new MemoryUsersStorage();
+        _storage = storage ??= new MemoryUsersStorage<long>();
         _handlers = handlers;
         _storage = storage;
         _pollingErrorHandler = pollingErrorHandler;
@@ -44,7 +44,7 @@ public class UpdateHandler : IUpdateHandler
                 .GetCustomAttributes(false)
                 .OfType<FilterAttribute>();
 
-            var passedFilters = filters.All(filter => filter.CallAsync(context).Result);
+            var passedFilters = filters.All(filter => filter.CallAsync(context, cancellationToken).Result);
 
             if (passedFilters)
             {

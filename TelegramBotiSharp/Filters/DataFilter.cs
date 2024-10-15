@@ -9,6 +9,6 @@ namespace TelegramBotiSharp.Filters;
 /// <param name="data">Данные</param>
 public class DataFilter(string? data) : FilterAttribute(data)
 {
-    public override Task<bool> CallAsync(TelegramContext context)
+    public override Task<bool> CallAsync(TelegramContext context, CancellationToken token = default)
         => Task.FromResult(Data == context.Data);
 }

@@ -23,6 +23,7 @@ public abstract class FilterAttribute(string? data) : Attribute
     /// Returns <see cref="Task"/> whose result will be <see langword="true"/>, 
     /// if the filter is passed, otherwise <see langword="false"/>
     /// </summary>
-    /// <param name="context"></param>
-    public abstract Task<bool> CallAsync(TelegramContext context);
+    /// <param name="context">Context</param>
+    /// <param name="token">Token</param>
+    public abstract Task<bool> CallAsync(TelegramContext context, CancellationToken token = default);
 }

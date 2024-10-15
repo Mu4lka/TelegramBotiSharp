@@ -10,7 +10,7 @@ namespace TelegramBotiSharp.Filters;
 /// <param name="state">State</param>
 public class StateFilter(string? state) : FilterAttribute(state)
 {
-    public override async Task<bool> CallAsync(TelegramContext context)
+    public override async Task<bool> CallAsync(TelegramContext context, CancellationToken token = default)
     {
         if (context.UserStorage is null)
             return false;

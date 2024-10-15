@@ -9,7 +9,7 @@ public interface IUsersStorage<TUserId> where TUserId : notnull
     /// <summary>
     /// Sets the state by user id
     /// </summary>
-    /// <param name="id">User idr</param>
+    /// <param name="id">User id</param>
     /// <param name="state">State</param>
     /// <param name="token">Token</param>
     Task SetStateAsync(TUserId id, string? state, CancellationToken token = default);
@@ -66,7 +66,7 @@ public interface IUsersStorage<TUserId> where TUserId : notnull
     Task<TData?> GetDataAsync<TData>(TUserId id, string key, CancellationToken token = default);
 
     /// <summary>
-    /// Clear user data and state
+    /// Clears user data and user state by user id
     /// </summary>
     /// <param name="id">User id</param>
     /// <param name="token">Token</param>
