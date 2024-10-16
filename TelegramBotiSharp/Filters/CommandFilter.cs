@@ -1,5 +1,7 @@
 ﻿using Telegram.Bot;
+using Telegram.Bot.Types;
 using Telegram.Bot.Types.Enums;
+using TelegramBotiSharp.Filters.Exceptions;
 using TelegramBotiSharp.Types;
 
 namespace TelegramBotiSharp.Filters;
@@ -16,24 +18,28 @@ public class CommandFilter(string command) : FilterAttribute(command)
 
     public async override Task<bool> CallAsync(TelegramContext context, CancellationToken token = default)
     {
-        var message = context.Update.Message;
+        var message = context.Update.Message
+            ?? throw new InvalidFilterException($"The {nameof(CommandFilter)} applies only to the {nameof(Message)} type");
 
-        if (message?.Entities?.FirstOrDefault()?.Type is not MessageEntityType.BotCommand)
+        if (message.Entities?.FirstOrDefault()?.Type is not MessageEntityType.BotCommand)
             return false;
 
         if (BotUserName is null)
         {
             var bot = await context.BotClient.GetMeAsync();
-            BotUserName = "@" + bot.Username;
+            BotUserName = $"@{bot.Username}";
         }
 
-        var mentions = message.Entities.Where(e => e.Type is MessageEntityType.Mention);
-        var isNotBotMention = mentions.Any(m => message.Text!.Substring(m.Offset, m.Length) == BotUserName);
+        if(message.Entities.Length > 1)
+        {
+            var mentions = message.Entities.Where(e => e.Type is MessageEntityType.Mention);
+            var isBotMention = mentions.Any(m => message.Text!.Substring(m.Offset, m.Length) == BotUserName);
 
-        if (isNotBotMention) return false;
+            if (!isBotMention) return false;
+        }
 
         var command = message.Text![..message.Entities[0].Length];
 
-        return command == "/" + Data;
+        return command == $"/{Data}" || command == $"/{Data}{BotUserName}";
     }
 }

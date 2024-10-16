@@ -1,5 +1,6 @@
 ﻿using TelegramBotiSharp.Types;
 using TelegramBotiSharp.Storages;
+using TelegramBotiSharp.Filters.Exceptions;
 
 namespace TelegramBotiSharp.Filters;
 
@@ -13,7 +14,7 @@ public class StateFilter(string? state) : FilterAttribute(state)
     public override async Task<bool> CallAsync(TelegramContext context, CancellationToken token = default)
     {
         if (context.UserStorage is null)
-            return false;
+            throw new InvalidFilterException($"{nameof(context.UserStorage)} is null");
 
         return await context.UserStorage.GetStateAsync() == Data;
     }
