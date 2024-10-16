@@ -1,11 +1,10 @@
 ﻿using System.Reflection;
 using Telegram.Bot.Types;
 using Telegram.Bot.Types.Enums;
-using TelegramBotiSharp.Filters;
 using TelegramBotiSharp.Filters.Exceptions;
 using TelegramBotiSharp.Types;
 
-namespace CodeGuruBot.Application.Filters;
+namespace TelegramBotiSharp.Filters;
 
 /// <summary>
 /// Filter by chat type
