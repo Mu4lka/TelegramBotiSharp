@@ -44,7 +44,7 @@ public class UpdateHandler : IUpdateHandler
                 .GetCustomAttributes(false)
                 .OfType<FilterAttribute>();
 
-            var passedFilters = filters.All(filter => filter.CallAsync(context, cancellationToken).Result);
+            var passedFilters = filters.All(filter => filter.CallAsync(context).Result);
 
             if (passedFilters)
             {

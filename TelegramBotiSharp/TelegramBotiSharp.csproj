@@ -1,14 +1,40 @@
 ﻿<Project Sdk="Microsoft.NET.Sdk">
 
   <PropertyGroup>
-    <TargetFramework>net8.0</TargetFramework>
+	<TargetFramework>net8.0</TargetFramework>
     <ImplicitUsings>enable</ImplicitUsings>
     <Nullable>enable</Nullable>
     <SignAssembly>False</SignAssembly>
-    <Version>2.1.0</Version>
+    <Version>2.2.0</Version>
+	<EnforceCodeStyleInBuild>True</EnforceCodeStyleInBuild>
   </PropertyGroup>
 
-  <ItemGroup>
+	<PropertyGroup Label="Package">
+		<GenerateDocumentationFile>True</GenerateDocumentationFile>
+		<Title>TelegramBotiSharp Client</Title>
+		<Description>
+			This is a library that complements the standard Telegram.Bot library for creating telegram bots in C#.
+			By using this small functionality, you will be able to write simpler telegram bots.
+		</Description>
+		<PackageId>TelegramBotiSharp</PackageId>
+		<Authors>Mu4lka</Authors>
+		<PackageIcon>telegram-boti-sharp-icon.png</PackageIcon>
+		<PackageReadmeFile>README.md</PackageReadmeFile>
+		<PackageProjectUrl>https://gitlab.com/Mu4lka/TelegramBotiSharp</PackageProjectUrl>
+		<PackageLicenseExpression>MIT</PackageLicenseExpression>
+		<RepositoryUrl>https://gitlab.com/Mu4lka/TelegramBotiSharp.git</RepositoryUrl>
+		<PackageTags>Telegram;Bot;Api;Payment;Inline;Games</PackageTags>
+	</PropertyGroup>
+
+	<ItemGroup>
+		<None Include="../telegram-boti-sharp-icon.png">
+			<Pack>true</Pack>
+			<PackagePath>/</PackagePath>
+		</None>
+		<None Include="../README.md" Pack="true" PackagePath="/" />
+	</ItemGroup>
+
+	<ItemGroup>
     <PackageReference Include="Telegram.Bot" Version="19.0.0" />
   </ItemGroup>
 

@@ -3,12 +3,11 @@
 namespace TelegramBotiSharp.Filters;
 
 /// <summary>
-/// Фильтр, проверяющий на равенство <see cref="FilterAttribute.Data"/>
-/// и <see cref="TelegramContext.Data"/>
+/// 
 /// </summary>
-/// <param name="data">Данные</param>
-public class DataFilter(string? data) : FilterAttribute(data)
+/// <param name="data">Data</param>
+public class DataFilter(string? _data) : FilterAttribute
 {
-    public override Task<bool> CallAsync(TelegramContext context, CancellationToken token = default)
-        => Task.FromResult(Data == context.Data);
+    public override Task<bool> CallAsync(TelegramContext context)
+        => Task.FromResult(_data == context.Data);
 }

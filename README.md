@@ -55,7 +55,7 @@ internal class CommandHandler : MessageHandler
 internal class StartCommandHandler : MessageHandler
 {
     [CommandFilter("start")]
-    public override async Task HandleUpdateAsync(TelegramContext context)
+    public override async Task HandleAsync(TelegramContext context)
     {
         await context.BotClient.SendTextMessageAsync(context.UserId, "Hello, World!");
     }
@@ -102,7 +102,6 @@ internal class ExempleFilter(string? data) : FilterAttribute(data)
     public override async Task<bool> CallAsync(TelegramContext context)
     {
         //code...
-        return true;
     }
 }
 ```

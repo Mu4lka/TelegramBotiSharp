@@ -12,11 +12,19 @@ namespace TelegramBotiSharp.Filters;
 /// message body is <see cref="MessageEntityType.BotCommand"/> with possible 
 /// mention of a bot
 /// </summary>
-public class CommandFilter(string command) : FilterAttribute(command)
+public class CommandFilter : FilterAttribute
 {
-    private static string? BotUserName;
+    private static string? _botUserName;
+    private readonly string _command;
 
-    public async override Task<bool> CallAsync(TelegramContext context, CancellationToken token = default)
+    public CommandFilter(string command)
+    {
+        ArgumentNullException.ThrowIfNull(command, nameof(command));
+
+        _command = command[0] == '/' ? command : '/' + command;
+    }
+
+    public async override Task<bool> CallAsync(TelegramContext context)
     {
         var message = context.Update.Message
             ?? throw new InvalidFilterException($"The {nameof(CommandFilter)} applies only to the {nameof(Message)} type");
@@ -24,22 +32,22 @@ public class CommandFilter(string command) : FilterAttribute(command)
         if (message.Entities?.FirstOrDefault()?.Type is not MessageEntityType.BotCommand)
             return false;
 
-        if (BotUserName is null)
+        if (_botUserName is null)
         {
             var bot = await context.BotClient.GetMeAsync();
-            BotUserName = $"@{bot.Username}";
+            _botUserName = $"@{bot.Username}";
         }
 
         if(message.Entities.Length > 1)
         {
             var mentions = message.Entities.Where(e => e.Type is MessageEntityType.Mention);
-            var isBotMention = mentions.Any(m => message.Text!.Substring(m.Offset, m.Length) == BotUserName);
+            var isBotMention = mentions.Any(m => message.Text!.Substring(m.Offset, m.Length) == _botUserName);
 
             if (!isBotMention) return false;
         }
 
         var command = message.Text![..message.Entities[0].Length];
 
-        return command == $"/{Data}" || command == $"/{Data}{BotUserName}";
+        return command == _command || command == $"{_command}{_botUserName}";
     }
 }
