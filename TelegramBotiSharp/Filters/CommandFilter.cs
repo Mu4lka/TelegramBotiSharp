@@ -7,10 +7,7 @@ using TelegramBotiSharp.Types;
 namespace TelegramBotiSharp.Filters;
 
 /// <summary>
-/// Filter for commands in chat for update type <see cref="UpdateType.Message"/>.
-/// The <see cref="CallAsync"/> method will return <see langword="true"/> if the first entity 
-/// message body is <see cref="MessageEntityType.BotCommand"/> with possible 
-/// mention of a bot
+/// Filter on command
 /// </summary>
 public class CommandFilter : FilterAttribute
 {

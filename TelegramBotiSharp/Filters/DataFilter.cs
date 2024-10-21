@@ -3,7 +3,7 @@
 namespace TelegramBotiSharp.Filters;
 
 /// <summary>
-/// 
+/// Filter on <see cref="TelegramContext.Data"/>
 /// </summary>
 /// <param name="data">Data</param>
 public class DataFilter(string? _data) : FilterAttribute
