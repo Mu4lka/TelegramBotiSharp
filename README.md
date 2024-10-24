@@ -27,7 +27,7 @@
 ```
 
 ### Пример Program.cs
-Заполните файл Program.cs следующим кодом:
+Заполните файл `Program.cs` следующим кодом:
 
 ```C#
 // Замените "TOKEN" на реальный токен вашего бота
@@ -63,27 +63,22 @@ internal class StartCommandHandler : MessageHandler
 В этом примере обработчик StartCommandHandler будет срабатывать, когда пользователь отправит команду "/start".
 
 **Основные обработчики:**
-* CallbackQueryHandler — для обработки Telegram.Bot.Types.CallbackQuery
-* MessageHandler — для обработки Telegram.Bot.Types.Message.
+* `CallbackQueryHandler` — для обработки `Telegram.Bot.Types.CallbackQuery`;
+* `MessageHandler` — для обработки `Telegram.Bot.Types.Message`.
 
 Остальные обработчики можно найти в папке проекта TelegramBotiSharp\Handling\Handlers.
 
 ### Фильтры
-Пример выше использует фильтр-атрибут CommandFilter("start"), который сработает, если пользователь отправит сообщение-команду "/start".
-
-**Основные фильтры**
-* CommandFilter — сообщение является командой.
-* StateFilter — состояние пользователя.
-* DataFilter — данные, отправленные пользователем.
+Пример выше использует фильтр-атрибут `CommandFilter("start")`, который сработает, если пользователь отправит сообщение-команду "/start".
 
 Фильтры можно использовать одновременно для создания более сложной логики:
 
 ```C#
 internal class ExempleHandler : CallbackQueryHandler
 {
-    [StateFilter(nameof(State.Proccess))]
+    [StateFilter("state_proccess")]
     [DataFilter("Далее")]
-    public override async Task HandleUpdateAsync(TelegramContext context)
+    public override async Task HandleAsync(TelegramContext context)
     {
         // Ваш код
     }
@@ -91,16 +86,38 @@ internal class ExempleHandler : CallbackQueryHandler
 ```
 В этом примере обработчик сработает, если состояние пользователя — State.Proccess, и пользователь нажал на кнопку с данными "Далее".
 
+**Основные фильтры**
+* `CommandFilter` — сообщение является командой.
+* `StateFilter` — состояние пользователя.
+* `DataFilter` — данные, отправленные пользователем.
+
+Все фильтры данной библиотеке находятся в пространстве имен `TelegramBotiSharp.Filters`
+
 ### Кастомные фильтры
 
-Чтобы создать собственный фильтр, создайте класс, наследующий от FilterAttribute, и реализуйте его:
+Чтобы создать собственный фильтр, создайте класс, наследующий от `FilterAttribute`, и реализуйте его:
 
 ```C#
-internal class ExempleFilter(string? data) : FilterAttribute(data)
+internal class ExempleFilter(string? data) : FilterAttribute
 {
     public override async Task<bool> CallAsync(TelegramContext context)
     {
         // Ваш код
     }
 }
+```
+
+### Параллельное выполенение обработчиков
+
+Данная библиотека предоставляет новый тип данных `ParallelUpdateReceiver`, определенный в пространстве имен `TelegramBotiSharp.Handling.Polling`.
+Данный тип обрабатывает обновления `Telegram.Bot.Types.Update` параллельно, а не последовательно, тем самым увеличивается скорость обработки.
+
+Недостатком является то, что обработка становится недетерминированной, и в некоторых случаях это может приводить к разному порядку вывода сообщений.
+
+#### Использование
+
+Всё очень просто! Передайте в метод `StartReceivingAsync` экземпляр класса `ParallelUpdateReceiver`, как показано в следующем примере:
+
+```C#
+await botClient.StartReceivingAsync(updateHandler, new ParallelUpdateReceiver(botClient));
 ```
