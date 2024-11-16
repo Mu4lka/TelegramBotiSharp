@@ -13,13 +13,10 @@ public abstract class ChatMemberHandler : IUpdateTypeHandler
     public UpdateType UpdateType => UpdateType.ChatMember;
 
     public TelegramContext GetContext(TelegramContextBuilder builder)
-        => new(
-            builder.BotClient,
-            builder.Storage,
-            builder.Update,
-            builder.Update.ChatMember!.From,
-            null,
-            builder.Token);
+        => builder
+            .WithUser(u => u.ChatMember!.From!)
+            .WithUserStorageItem(u => u.ChatMember!.From!.Id)
+            .Build();
 
     public abstract Task HandleAsync(TelegramContext context);
 }

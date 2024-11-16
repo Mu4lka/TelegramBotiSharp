@@ -14,17 +14,12 @@ public abstract class PollAnswerHandler : IUpdateTypeHandler
 {
     public UpdateType UpdateType => UpdateType.PollAnswer;
 
-    public TelegramContext GetContext(ITelegramBotClient botClient, IUsersStorage<long> storage, Update update)
-        => new(botClient, storage, update, update.PollAnswer!.User);
-
     public TelegramContext GetContext(TelegramContextBuilder builder)
-        => new(
-            builder.BotClient,
-            builder.Storage,
-            builder.Update,
-            builder.Update.PollAnswer!.User,
-            null,
-            builder.Token);
+        => builder
+            .WithUser(u => u.PollAnswer!.User!)
+            .WithData(u => u.PollAnswer!.PollId)
+            .WithUserStorageItem(u => u.PollAnswer!.User!.Id)
+            .Build();
 
     public abstract Task HandleAsync(TelegramContext context);
 }

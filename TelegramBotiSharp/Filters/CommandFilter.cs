@@ -31,20 +31,28 @@ public class CommandFilter : FilterAttribute
 
         if (_botUserName is null)
         {
-            var bot = await context.BotClient.GetMeAsync();
+            var bot = await context.BotClient.GetMe();
             _botUserName = $"@{bot.Username}";
         }
-
-        if(message.Entities.Length > 1)
-        {
-            var mentions = message.Entities.Where(e => e.Type is MessageEntityType.Mention);
-            var isBotMention = mentions.Any(m => message.Text!.Substring(m.Offset, m.Length) == _botUserName);
-
-            if (!isBotMention) return false;
-        }
-
         var command = message.Text![..message.Entities[0].Length];
 
-        return command == _command || command == $"{_command}{_botUserName}";
+        
+        var mentions = message.Entities.Where(e => e.Type is MessageEntityType.Mention);
+
+        if (mentions.Any())
+        {
+            var isBotMention = mentions.Any(m => (message.Text!.Substring(m.Offset, m.Length) == _botUserName));
+
+            if (!isBotMention)
+                return false;
+
+            if (command == _command)
+                return true;
+        }
+
+        if (message.Chat.Type == ChatType.Private)
+            return command == _command || command == _command + _botUserName;
+
+        return command == _command + _botUserName;
     }
 }

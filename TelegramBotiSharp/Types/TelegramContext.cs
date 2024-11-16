@@ -7,18 +7,12 @@ namespace TelegramBotiSharp.Types;
 /// <summary>
 /// An object for transporting data in a convenient format, created for each <see cref="Telegram.Bot.Types.Update"/>
 /// </summary>
-public class TelegramContext(
-    ITelegramBotClient botClient,
-    IUsersStorage<long> storage,
-    Update update,
-    User? user = null,
-    string? data = default!,
-    CancellationToken token = default!)
+public class TelegramContext
 {
-    public ITelegramBotClient BotClient { get; } = botClient;
-    public Update Update { get; } = update;
-    public UserStorageItem<long>? UserStorage { get; } = user is null ? null : new UserStorageItem<long>(user.Id, storage);
-    public User? User { get; } = user;
-    public string? Data { get; } = data;
-    public CancellationToken Token = token;
+    public ITelegramBotClient BotClient { get; set; }
+    public Update Update { get; set; }
+    public UserStorageItem<long>? UserStorage { get; set; }
+    public User? User { get; set; }
+    public string? Data { get; set; }
+    public CancellationToken Token { get; set; }
 }

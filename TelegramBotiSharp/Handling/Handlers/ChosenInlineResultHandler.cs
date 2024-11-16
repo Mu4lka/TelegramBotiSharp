@@ -13,13 +13,11 @@ public abstract class ChosenInlineResultHandler : IUpdateTypeHandler
     public UpdateType UpdateType => UpdateType.ChosenInlineResult;
 
     public TelegramContext GetContext(TelegramContextBuilder builder)
-        => new(
-            builder.BotClient,
-            builder.Storage,
-            builder.Update,
-            builder.Update.ChosenInlineResult!.From,
-            builder.Update.ChosenInlineResult!.Query,
-            builder.Token);
+        => builder
+            .WithUser(u => u.ChosenInlineResult!.From!)
+            .WithData(u => u.ChosenInlineResult!.Query)
+            .WithUserStorageItem(u => u.ChosenInlineResult!.From!.Id)
+            .Build();
 
     public abstract Task HandleAsync(TelegramContext context);
 }

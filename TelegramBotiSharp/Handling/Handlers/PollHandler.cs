@@ -13,13 +13,9 @@ public abstract class PollHandler : IUpdateTypeHandler
     public UpdateType UpdateType => UpdateType.Poll;
 
     public TelegramContext GetContext(TelegramContextBuilder builder)
-        => new(
-            builder.BotClient,
-            builder.Storage,
-            builder.Update,
-            null,
-            null,
-            builder.Token);
+    => builder
+        .WithData(u => u.Poll!.Id)
+        .Build();
 
     public abstract Task HandleAsync(TelegramContext context);
 }

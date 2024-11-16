@@ -13,13 +13,11 @@ public abstract class EditedMessageHandler : IUpdateTypeHandler
     public UpdateType UpdateType => UpdateType.EditedMessage;
 
     public TelegramContext GetContext(TelegramContextBuilder builder)
-        => new(
-            builder.BotClient,
-            builder.Storage,
-            builder.Update,
-            builder.Update.EditedMessage!.From,
-            builder.Update.EditedMessage.Text,
-            builder.Token);
+        => builder
+            .WithUser(u => u.EditedMessage!.From!)
+            .WithData(u => u.EditedMessage!.Text!)
+            .WithUserStorageItem(u => u.EditedMessage!.From!.Id)
+            .Build();
 
     public abstract Task HandleAsync(TelegramContext context);
 }

@@ -13,13 +13,11 @@ public abstract class PreCheckoutQueryHandler : IUpdateTypeHandler
     public UpdateType UpdateType => UpdateType.PreCheckoutQuery;
 
     public TelegramContext GetContext(TelegramContextBuilder builder)
-        => new(
-            builder.BotClient,
-            builder.Storage,
-            builder.Update,
-            builder.Update.PreCheckoutQuery!.From,
-            null,
-            builder.Token);
+    => builder
+        .WithUser(u => u.PreCheckoutQuery!.From!)
+        .WithData(u => u.PreCheckoutQuery!.Id)
+        .WithUserStorageItem(u => u.PreCheckoutQuery!.From!.Id)
+        .Build();
 
     public abstract Task HandleAsync(TelegramContext context);
 }

@@ -13,13 +13,11 @@ public abstract class ShippingQueryHandler : IUpdateTypeHandler
     public UpdateType UpdateType => UpdateType.ShippingQuery;
 
     public TelegramContext GetContext(TelegramContextBuilder builder)
-        => new(
-            builder.BotClient,
-            builder.Storage,
-            builder.Update,
-            builder.Update.ShippingQuery!.From,
-            null,
-            builder.Token);
+    => builder
+        .WithUser(u => u.ShippingQuery!.From!)
+        .WithData(u => u.ShippingQuery!.Id)
+        .WithUserStorageItem(u => u.ShippingQuery!.From!.Id)
+        .Build();
 
     public abstract Task HandleAsync(TelegramContext context);
 }

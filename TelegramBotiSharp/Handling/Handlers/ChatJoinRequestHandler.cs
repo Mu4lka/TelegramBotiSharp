@@ -13,13 +13,11 @@ public abstract class ChatJoinRequestHandler : IUpdateTypeHandler
     public UpdateType UpdateType => UpdateType.ChatJoinRequest;
 
     public TelegramContext GetContext(TelegramContextBuilder builder)
-        => new(
-            builder.BotClient,
-            builder.Storage,
-            builder.Update,
-            builder.Update.ChatJoinRequest!.From,
-            builder.Update.ChatJoinRequest!.Bio,
-            builder.Token);
+        => builder
+            .WithUser(u => u.ChatJoinRequest!.From!)
+            .WithData(u => u.ChatJoinRequest!.Bio!)
+            .WithUserStorageItem(u => u.ChatJoinRequest!.From!.Id)
+            .Build();
 
     public abstract Task HandleAsync(TelegramContext context);
 }

@@ -13,13 +13,11 @@ public abstract class ChannelPostHandler : IUpdateTypeHandler
     public UpdateType UpdateType => UpdateType.ChannelPost;
 
     public TelegramContext GetContext(TelegramContextBuilder builder)
-        => new(
-            builder.BotClient,
-            builder.Storage,
-            builder.Update,
-            builder.Update.ChannelPost!.From,
-            builder.Update.ChannelPost!.Text,
-            builder.Token);
+        => builder
+            .WithUser(u => u.ChannelPost!.From!)
+            .WithData(u => u.ChannelPost!.Text!)
+            .WithUserStorageItem(u => u.ChannelPost!.From!.Id)
+            .Build();
 
     public abstract Task HandleAsync(TelegramContext context);
 }

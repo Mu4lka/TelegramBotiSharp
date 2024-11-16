@@ -6,18 +6,16 @@ using TelegramBotiSharp.Types;
 namespace TelegramBotiSharp.Handling.Handlers;
 
 /// <summary>
-/// <see cref="Update.Message"/> handler
+/// <see cref="Update.RemovedChatBoost"/> handler
 /// </summary>
-public abstract class MessageHandler : IUpdateTypeHandler
+public abstract class RemovedChatBoostHandler : IUpdateTypeHandler
 {
-    public UpdateType UpdateType => UpdateType.Message;
+    public UpdateType UpdateType => UpdateType.RemovedChatBoost;
 
     public TelegramContext GetContext(TelegramContextBuilder builder)
-        => builder
-            .WithUser(u => u.Message!.From!)
-            .WithData(u => u.Message!.Text)
-            .WithUserStorageItem(u => u.Message!.From!.Id)
-            .Build();
+       => builder
+           .WithData(u => u.RemovedChatBoost!.BoostId)
+           .Build();
 
     public abstract Task HandleAsync(TelegramContext context);
 }

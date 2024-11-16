@@ -13,13 +13,11 @@ public abstract class InlineQueryHandler : IUpdateTypeHandler
     public UpdateType UpdateType => UpdateType.InlineQuery;
 
     public TelegramContext GetContext(TelegramContextBuilder builder)
-       => new(
-           builder.BotClient,
-           builder.Storage,
-           builder.Update,
-           builder.Update.InlineQuery!.From,
-           builder.Update.InlineQuery!.Query,
-           builder.Token);
+        => builder
+            .WithUser(u => u.InlineQuery!.From!)
+            .WithData(u => u.InlineQuery!.Query!)
+            .WithUserStorageItem(u => u.InlineQuery!.From!.Id)
+            .Build();
 
     public abstract Task HandleAsync(TelegramContext context);
 }

@@ -6,17 +6,17 @@ using TelegramBotiSharp.Types;
 namespace TelegramBotiSharp.Handling.Handlers;
 
 /// <summary>
-/// <see cref="Update.EditedChannelPost"/> handler
+/// <see cref="Update.BusinessMessage"/> handler
 /// </summary>
-public abstract class EditedChannelPostHandler : IUpdateTypeHandler
+public abstract class BusinessMessageHandler : IUpdateTypeHandler
 {
-    public UpdateType UpdateType => UpdateType.EditedChannelPost;
+    public UpdateType UpdateType => UpdateType.BusinessMessage;
 
     public TelegramContext GetContext(TelegramContextBuilder builder)
         => builder
-            .WithUser(u => u.EditedChannelPost!.From!)
-            .WithData(u => u.EditedChannelPost!.Text!)
-            .WithUserStorageItem(u => u.EditedChannelPost!.From!.Id)
+            .WithUser(u => u.BusinessMessage!.From)
+            .WithData(u => u.BusinessMessage!.Text)
+            .WithUserStorageItem(u => u.BusinessMessage!.From!.Id)
             .Build();
 
     public abstract Task HandleAsync(TelegramContext context);

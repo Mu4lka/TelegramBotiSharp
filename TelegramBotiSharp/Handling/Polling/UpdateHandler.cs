@@ -14,18 +14,18 @@ namespace TelegramBotiSharp.Handling.Polling;
 public class UpdateHandler : IUpdateHandler
 {
     private IEnumerable<IUpdateTypeHandler> _handlers;
-    private Func<ITelegramBotClient, Exception, CancellationToken, Task> _pollingErrorHandler;
+    private Func<ITelegramBotClient, Exception, HandleErrorSource, CancellationToken, Task> _errorHandler;
     private IUsersStorage<long> _storage;
 
     public UpdateHandler(
         IEnumerable<IUpdateTypeHandler> handlers,
         IUsersStorage<long> storage = default!,
-        Func<ITelegramBotClient, Exception, CancellationToken, Task> pollingErrorHandler = default!)
+        Func<ITelegramBotClient, Exception, HandleErrorSource, CancellationToken, Task> errorHandler = null)
     {
         _storage = storage ??= new MemoryUsersStorage<long>();
         _handlers = handlers;
         _storage = storage;
-        _pollingErrorHandler = pollingErrorHandler;
+        _errorHandler = errorHandler;
     }
 
     public async Task HandleUpdateAsync(ITelegramBotClient botClient, Update update, CancellationToken cancellationToken)
@@ -34,7 +34,9 @@ public class UpdateHandler : IUpdateHandler
 
         if (!handlers.Any()) return;
 
-        var context = handlers.First().GetContext(new TelegramContextBuilder(botClient, _storage, update, cancellationToken));
+        var context = handlers
+            .First()
+            .GetContext(TelegramContextBuilder.Create(botClient, update, _storage, cancellationToken));
 
         foreach (var handler in handlers)
         {
@@ -54,11 +56,11 @@ public class UpdateHandler : IUpdateHandler
         }
     }
 
-    public async Task HandlePollingErrorAsync(ITelegramBotClient botClient, Exception exception, CancellationToken cancellationToken)
+    public async Task HandleErrorAsync(ITelegramBotClient botClient, Exception exception, HandleErrorSource source, CancellationToken cancellationToken)
     {
-        if (_pollingErrorHandler is null)
+        if (_errorHandler is null)
             throw exception;
 
-        await _pollingErrorHandler.Invoke(botClient, exception, cancellationToken);
+        await _errorHandler.Invoke(botClient, exception, source, cancellationToken);
     }
 }
