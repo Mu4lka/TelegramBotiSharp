@@ -20,7 +20,7 @@ public class UpdateHandler : IUpdateHandler
     public UpdateHandler(
         IEnumerable<IUpdateTypeHandler> handlers,
         IUsersStorage<long> storage = default!,
-        Func<ITelegramBotClient, Exception, HandleErrorSource, CancellationToken, Task> errorHandler = null)
+        Func<ITelegramBotClient, Exception, HandleErrorSource, CancellationToken, Task> errorHandler = null!)
     {
         _storage = storage ??= new MemoryUsersStorage<long>();
         _handlers = handlers;

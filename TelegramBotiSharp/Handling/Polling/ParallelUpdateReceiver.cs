@@ -28,22 +28,41 @@ public class ParallelUpdateReceiver : IUpdateReceiver
 
         if (_receiverOptions.DropPendingUpdates is true)
         {
-            var updates = await _botClient.GetUpdates(-1, 1, 0, [], cancellationToken);
-            offset = updates.Length == 0 ? 0 : updates[^1].Id + 1;
+            try
+            {
+                var updates = await _botClient.GetUpdates(-1, 1, 0, [], cancellationToken);
+                offset = updates.Length == 0 ? 0 : updates[^1].Id + 1;
+            }
+            catch (OperationCanceledException)
+            {
+
+            }
         }
 
         while (!cancellationToken.IsCancellationRequested)
         {
             var timeout = (int)_botClient.Timeout.TotalSeconds;
-            Update[]? updates = null;
+            Update[]? updates = null!;
 
-            updates = await _botClient.GetUpdates(
-                offset: offset,
-                limit: _receiverOptions.Limit,
-                timeout: timeout,
-                allowedUpdates: _receiverOptions.AllowedUpdates,
-                cancellationToken: cancellationToken
-            );
+            try
+            {
+                updates = await _botClient.GetUpdates(
+                    offset: offset,
+                    limit: _receiverOptions.Limit,
+                    timeout: timeout,
+                    allowedUpdates: _receiverOptions.AllowedUpdates,
+                    cancellationToken: cancellationToken
+                    );
+            }
+            catch (OperationCanceledException)
+            {
+                return;
+            }
+            catch(Exception ex)
+            {
+                await updateHandler.HandleErrorAsync(_botClient, ex, HandleErrorSource.PollingError, cancellationToken);
+            }
+            
 
             if (updates.Length == 0)
                 continue;
