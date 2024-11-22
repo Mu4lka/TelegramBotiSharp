@@ -2,6 +2,7 @@
 using Telegram.Bot.Polling;
 using Telegram.Bot.Types;
 using TelegramBotiSharp.Filters;
+using TelegramBotiSharp.Handling.ErrorHandling;
 using TelegramBotiSharp.Handling.Handlers.Abstrаctions;
 using TelegramBotiSharp.Storages;
 using TelegramBotiSharp.Types;
@@ -14,13 +15,13 @@ namespace TelegramBotiSharp.Handling.Polling;
 public class UpdateHandler : IUpdateHandler
 {
     private IEnumerable<IUpdateTypeHandler> _handlers;
-    private Func<ITelegramBotClient, Exception, HandleErrorSource, CancellationToken, Task> _errorHandler;
+    private IErrorHandler? _errorHandler;
     private IUsersStorage<long> _storage;
 
     public UpdateHandler(
         IEnumerable<IUpdateTypeHandler> handlers,
         IUsersStorage<long> storage = default!,
-        Func<ITelegramBotClient, Exception, HandleErrorSource, CancellationToken, Task> errorHandler = null!)
+        IErrorHandler? errorHandler = null!)
     {
         _storage = storage ??= new MemoryUsersStorage<long>();
         _handlers = handlers;
@@ -61,6 +62,6 @@ public class UpdateHandler : IUpdateHandler
         if (_errorHandler is null)
             throw exception;
 
-        await _errorHandler.Invoke(botClient, exception, source, cancellationToken);
+        await _errorHandler.HandleErrorAsync(botClient, exception, source, cancellationToken);
     }
 }

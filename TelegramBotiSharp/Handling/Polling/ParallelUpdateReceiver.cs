@@ -37,6 +37,10 @@ public class ParallelUpdateReceiver : IUpdateReceiver
             {
 
             }
+            catch (Exception ex)
+            {
+                await updateHandler.HandleErrorAsync(_botClient, ex, HandleErrorSource.PollingError, cancellationToken);
+            }
         }
 
         while (!cancellationToken.IsCancellationRequested)
